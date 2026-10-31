@@ -19,7 +19,9 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.example.suginami-artwalk
         GENERATE_INFOPLIST_FILE: YES
-        INFOPLIST_KEY_CFBundleDisplayName: "アートウオーク"
+        # ホーム画面のアイコン下に出る名前（長いと「…」で省略されるため短く）
+        # App Store上の名前「すぎなみアートウォークアプリ(非公式)」は App Store Connect で設定する
+        INFOPLIST_KEY_CFBundleDisplayName: "アートウォーク"
         INFOPLIST_KEY_NSLocationWhenInUseUsageDescription: "近くのアートサインを知らせ、到着を確認するために現在地を使います。位置情報は端末の外に送信されません。"
         INFOPLIST_KEY_UILaunchScreen_Generation: YES
         INFOPLIST_KEY_UISupportedInterfaceOrientations: UIInterfaceOrientationPortrait
