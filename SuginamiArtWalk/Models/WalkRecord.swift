@@ -7,6 +7,8 @@ struct WalkRecord: Codable, Identifiable, Hashable {
         var lat: Double
         var lon: Double
         var t: TimeInterval
+        /// 区間番号（一時停止や電車移動で分かれる。古い記録では nil）
+        var seg: Int? = nil
     }
 
     let id: UUID
@@ -21,8 +23,30 @@ struct WalkRecord: Codable, Identifiable, Hashable {
     var steps: Int?
     /// この記録中に「見た！」を記録したサインのid
     var visitedSignIDs: [Int]
+    /// 一時停止していた合計時間
+    var pausedTime: TimeInterval? = nil
 
-    var duration: TimeInterval { end.timeIntervalSince(start) }
+    /// 一時停止を除いた、かかった時間
+    var duration: TimeInterval { max(0, end.timeIntervalSince(start) - (pausedTime ?? 0)) }
+
+    /// 区間ごとの軌跡
+    var segments: [[CLLocationCoordinate2D]] { Self.segments(of: points) }
+
+    static func segments(of points: [Point]) -> [[CLLocationCoordinate2D]] {
+        var result: [[CLLocationCoordinate2D]] = []
+        var current: [CLLocationCoordinate2D] = []
+        var seg: Int? = points.first?.seg
+        for p in points {
+            if p.seg != seg {
+                if !current.isEmpty { result.append(current) }
+                current = []
+                seg = p.seg
+            }
+            current.append(.init(latitude: p.lat, longitude: p.lon))
+        }
+        if !current.isEmpty { result.append(current) }
+        return result
+    }
 
     var coordinates: [CLLocationCoordinate2D] {
         points.map { CLLocationCoordinate2D(latitude: $0.lat, longitude: $0.lon) }

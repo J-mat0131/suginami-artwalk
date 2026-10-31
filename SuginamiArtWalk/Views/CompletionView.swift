@@ -182,10 +182,10 @@ struct CompletionView: View {
 
     /// 記録中ならその時点まで、そうでなければ「1か所目〜コンプリート」と重なる保存済みの記録の合計
     private var currentStats: CompletionStats? {
-        if recorder.isRecording, let start = recorder.startDate {
+        if recorder.isRecording {
             return CompletionStats(
                 distance: recorder.distance,
-                duration: Date().timeIntervalSince(start),
+                duration: recorder.elapsed(),
                 steps: recorder.steps,
                 kcal: Calorie.kcal(weightKg: weightKg, movingTime: recorder.movingTime, distance: recorder.distance),
                 isLive: true)

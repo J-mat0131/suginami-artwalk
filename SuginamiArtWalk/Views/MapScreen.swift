@@ -42,10 +42,14 @@ struct MapScreen: View {
                     }
                 }
 
-                if recorder.isRecording, recorder.points.count >= 2 {
-                    MapPolyline(coordinates: recorder.coordinates)
-                        .stroke(Theme.track,
-                                style: StrokeStyle(lineWidth: 6, lineCap: .round, lineJoin: .round))
+                if recorder.isRecording {
+                    ForEach(Array(recorder.segments.enumerated()), id: \.offset) { _, segment in
+                        if segment.count >= 2 {
+                            MapPolyline(coordinates: segment)
+                                .stroke(Theme.track,
+                                        style: StrokeStyle(lineWidth: 6, lineCap: .round, lineJoin: .round))
+                        }
+                    }
                 }
                 if recorder.isRecording, let first = recorder.coordinates.first {
                     Annotation("スタート", coordinate: first, anchor: .center) {
@@ -132,27 +136,56 @@ struct MapScreen: View {
     @ViewBuilder
     private var walkControl: some View {
         if recorder.isRecording {
-            HStack(spacing: 14) {
-                TimelineView(.periodic(from: .now, by: 1)) { context in
-                    let elapsed = context.date.timeIntervalSince(recorder.startDate ?? context.date)
-                    HStack(spacing: 14) {
-                        stat(elapsed.clockText, "時間")
-                        stat(recorder.distance.walkText, "距離")
-                        stat(recorder.steps.map { "\($0)" } ?? "—", "歩数")
+            VStack(alignment: .leading, spacing: 8) {
+                if recorder.isPaused {
+                    Label("一時停止中", systemImage: "pause.circle.fill")
+                        .font(.caption.bold())
+                        .foregroundStyle(Theme.koenji)
+                }
+                HStack(spacing: 12) {
+                    TimelineView(.periodic(from: .now, by: 1)) { context in
+                        HStack(spacing: 14) {
+                            stat(recorder.elapsed(at: context.date).clockText, "時間")
+                            stat(recorder.distance.walkText, "距離")
+                            stat(recorder.steps.map { "\($0)" } ?? "—", "歩数")
+                        }
                     }
+                    .opacity(recorder.isPaused ? 0.5 : 1)
+                    Spacer(minLength: 0)
+                    if recorder.isPaused {
+                        Button {
+                            recorder.resume(location: location)
+                        } label: {
+                            Image(systemName: "play.fill")
+                                .font(.headline)
+                                .frame(width: 22, height: 22)
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .accessibilityLabel("記録を再開")
+                    } else {
+                        Button {
+                            recorder.pause(location: location)
+                        } label: {
+                            Image(systemName: "pause.fill")
+                                .font(.headline)
+                                .frame(width: 22, height: 22)
+                        }
+                        .buttonStyle(.bordered)
+                        .accessibilityLabel("一時停止")
+                    }
+                    Button {
+                        confirmStop = true
+                    } label: {
+                        Image(systemName: "stop.fill")
+                            .font(.headline)
+                            .frame(width: 22, height: 22)
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .tint(.red)
+                    .accessibilityLabel("記録を停止")
                 }
-                Spacer(minLength: 0)
-                Button {
-                    confirmStop = true
-                } label: {
-                    Label("停止", systemImage: "stop.fill")
-                        .font(.headline)
-                        .padding(.horizontal, 6)
-                }
-                .buttonStyle(.borderedProminent)
-                .tint(.red)
-                .accessibilityLabel("記録を停止")
             }
+            .sensoryFeedback(.impact, trigger: recorder.isPaused)
             .padding(.horizontal, 16)
             .padding(.vertical, 12)
             .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 18))

@@ -33,12 +33,18 @@ struct WalkSummaryView: View {
                              value: "\(Int(kcal.rounded())) kcal")
                     StatTile(icon: "figure.walk", title: "歩数",
                              value: record.steps.map { "\($0.formatted()) 歩" } ?? "—")
-                    StatTile(icon: "clock", title: "かかった時間",
+                    StatTile(icon: "clock", title: record.pausedTime == nil ? "かかった時間" : "かかった時間（一時停止を除く）",
                              value: record.duration.walkDurationText)
                     StatTile(icon: "figure.walk.motion", title: "歩いていた時間",
                              value: record.movingTime.walkDurationText)
                     StatTile(icon: "speedometer", title: "平均の速さ",
                              value: record.averageSpeedKmh > 0 ? String(format: "%.1f km/h", record.averageSpeedKmh) : "—")
+                }
+
+                if let paused = record.pausedTime, paused >= 1 {
+                    Label("一時停止していた \(paused.walkDurationText) は、時間・歩数・距離に含めていません。", systemImage: "pause.circle")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
                 }
 
                 visitedSection
@@ -73,8 +79,12 @@ struct WalkSummaryView: View {
     private var trackMap: some View {
         if record.points.count >= 2 {
             Map(initialPosition: .automatic, interactionModes: [.pan, .zoom]) {
-                MapPolyline(coordinates: record.coordinates)
-                    .stroke(Theme.track, style: StrokeStyle(lineWidth: 6, lineCap: .round, lineJoin: .round))
+                ForEach(Array(record.segments.enumerated()), id: \.offset) { _, segment in
+                    if segment.count >= 2 {
+                        MapPolyline(coordinates: segment)
+                            .stroke(Theme.track, style: StrokeStyle(lineWidth: 6, lineCap: .round, lineJoin: .round))
+                    }
+                }
                 if let first = record.coordinates.first {
                     Annotation("スタート", coordinate: first, anchor: .center) {
                         Circle().fill(Theme.asagaya).frame(width: 14, height: 14)
