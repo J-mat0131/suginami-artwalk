@@ -98,7 +98,7 @@ struct SignDetailView: View {
                 .foregroundStyle(.secondary)
         }
         .padding(16)
-        .background(Color(.secondarySystemBackground), in: RoundedRectangle(cornerRadius: 16))
+        .background(Theme.sky, in: RoundedRectangle(cornerRadius: 16))
     }
 
     private var conceptSection: some View {
@@ -164,7 +164,7 @@ struct CompletionView: View {
             Spacer()
             Image(systemName: "star.circle.fill")
                 .font(.system(size: 96))
-                .foregroundStyle(Theme.accent)
+                .foregroundStyle(Theme.star)
                 .symbolEffect(.bounce, options: .repeat(2), value: bounce)
                 .onAppear { bounce = true }
             Text("7か所コンプリート！")

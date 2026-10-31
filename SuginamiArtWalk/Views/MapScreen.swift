@@ -24,11 +24,11 @@ struct MapScreen: View {
                     ForEach(route.legs) { leg in
                         if let line = leg.polyline {
                             MapPolyline(line)
-                                .stroke(Theme.accent.opacity(0.75),
+                                .stroke(Theme.route.opacity(0.85),
                                         style: StrokeStyle(lineWidth: 5, lineCap: .round, lineJoin: .round))
                         } else {
                             MapPolyline(coordinates: [leg.from.coordinate, leg.to.coordinate])
-                                .stroke(Theme.accent.opacity(0.5),
+                                .stroke(Theme.route.opacity(0.6),
                                         style: StrokeStyle(lineWidth: 3, dash: [6, 6]))
                         }
                     }
@@ -103,7 +103,7 @@ struct MapScreen: View {
         if let sign = location.nearbySign, !progress.isVisited(sign) {
             Button { selected = sign } label: {
                 HStack {
-                    Image(systemName: "sparkles")
+                    Image(systemName: "sparkles").foregroundStyle(Theme.star)
                     VStack(alignment: .leading) {
                         Text("近くにアートサインがあります").font(.caption).foregroundStyle(.secondary)
                         Text(sign.title).font(.headline)
