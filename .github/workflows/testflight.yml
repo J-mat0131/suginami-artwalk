@@ -78,7 +78,11 @@ jobs:
             CURRENT_PROJECT_VERSION="$BUILD_NUMBER" \
             | tee archive.log | grep -E "error:|warning:|ARCHIVE (SUCCEEDED|FAILED)" || true
           grep -q "ARCHIVE SUCCEEDED" archive.log || {
-            grep "error:" archive.log | sort -u | head -15 | while read -r l; do echo "::error title=Archive::${l}"; done
+            report() { sed -e 's/%/%25/g' | awk '{printf "%s%%0A", $0}'; }
+            ERRS=$(grep -iE "error|fail|signing|provision|certificate" archive.log | grep -v "^ *export\|^ *cd " | sort -u | tail -25 | cut -c1-300 | report)
+            TAIL=$(tail -30 archive.log | cut -c1-300 | report)
+            echo "::error title=Archive errors::${ERRS:-（該当行なし）}"
+            echo "::error title=Archive log tail::${TAIL}"
             exit 1
           }
 
@@ -114,7 +118,9 @@ jobs:
           if grep -qE "EXPORT SUCCEEDED|Upload succeeded|Uploaded" export.log; then
             echo "::notice title=TestFlight::ビルド ${BUILD_NUMBER} を App Store Connect にアップロードしました（処理完了まで10〜30分ほどかかります）"
           else
-            grep -iE "error" export.log | sort -u | head -15 | while read -r l; do echo "::error title=Export::${l}"; done
+            report() { sed -e 's/%/%25/g' | awk '{printf "%s%%0A", $0}'; }
+            echo "::error title=Export errors::$(grep -iE "error|fail" export.log | sort -u | tail -25 | cut -c1-300 | report)"
+            echo "::error title=Export log tail::$(tail -30 export.log | cut -c1-300 | report)"
             exit 1
           fi
 
