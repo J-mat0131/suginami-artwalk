@@ -3,24 +3,192 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>すぎなみアートウオークアプリ(非公式)</title>
+<title>すぎなみアートウオークアプリ(非公式)｜阿佐谷・高円寺のアートサイン巡りをもっと楽しく</title>
+<meta name="description" content="杉並区「すぎなみアートウオーク」（阿佐谷・高円寺、2026年10月1日〜2027年3月21日）を楽しむための非公式iPhoneアプリ。7か所のアートサインを地図で巡り、鑑賞記録や記念写真、歩いた距離・消費カロリーを残せます。杉並区在住の個人開発者が作りました。">
+<link rel="canonical" href="https://j-mat0131.github.io/suginami-artwalk/">
+<meta name="theme-color" content="#86CCD5">
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="すぎなみアートウオークアプリ(非公式)">
+<meta property="og:title" content="すぎなみアートウオークアプリ(非公式)">
+<meta property="og:description" content="阿佐谷・高円寺のアートサイン7か所を、地図・鑑賞記録・記念写真・歩いた記録で楽しめる非公式iPhoneアプリ。">
+<meta property="og:url" content="https://j-mat0131.github.io/suginami-artwalk/">
+<meta property="og:image" content="https://j-mat0131.github.io/suginami-artwalk/assets/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "MobileApplication",
+  "name": "すぎなみアートウオークアプリ(非公式)",
+  "operatingSystem": "iOS 17以降",
+  "applicationCategory": "TravelApplication",
+  "description": "杉並区「すぎなみアートウオーク」の7か所のアートサインを巡るための非公式アプリ。地図とルート、近づくとお知らせ、鑑賞記録と記念写真、歩いた距離・歩数・消費カロリーの記録、ノベルティ配布場所の表示に対応。",
+  "inLanguage": "ja",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "JPY" },
+  "author": { "@type": "Person", "name": "杉並区在住の個人開発者" },
+  "image": "https://j-mat0131.github.io/suginami-artwalk/assets/icon-512.png",
+  "url": "https://j-mat0131.github.io/suginami-artwalk/"
+}
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL@24,500,1&display=block" rel="stylesheet">
+
 <style>
-  :root { color-scheme: light dark; --accent: #347F8C; }
-  body { font-family: -apple-system, "Hiragino Sans", "Noto Sans JP", sans-serif; line-height: 1.8; margin: 0; padding: 32px 16px; background: #E6F4F6; color: #1d2b2e; }
-  @media (prefers-color-scheme: dark) { body { background: #142226; color: #e6f0f2; } :root { --accent: #7FCBD3; } }
-  main { max-width: 640px; margin: 0 auto; }
-  h1 { font-size: 1.5rem; }
-  a { color: var(--accent); }
-  .note { font-size: .9rem; opacity: .8; }
+  :root {
+    color-scheme: light dark;
+    --sky: #E6F4F6; --sky2: #BFE8EC; --aqua: #5FB3C2; --teal: #347F8C;
+    --green: #4E9E75; --lav: #7E6DB4; --sun: #E8B84A;
+    --bg: #F7FCFC; --card: #FFFFFF; --text: #1F2E31; --sub: #53676B; --line: #D6EAEC;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #11201F; --card: #1A2D30; --text: #E8F2F3; --sub: #A8BEC2; --line: #2B4549;
+            --teal: #7FCBD3; --green: #6CC093; --lav: #A897E0; --sky: #17292C; --sky2: #1E3A3F; }
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+         font-family: "Zen Maru Gothic", -apple-system, "Hiragino Maru Gothic ProN", "Hiragino Sans", sans-serif;
+         font-weight: 500; line-height: 1.85; -webkit-font-smoothing: antialiased; }
+  a { color: var(--teal); }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 0 16px; }
+  .ms { font-family: "Material Symbols Rounded"; font-weight: normal; font-style: normal; line-height: 1;
+        font-size: 26px; display: inline-block; overflow: hidden; -webkit-font-feature-settings: "liga"; font-feature-settings: "liga"; }
+
+  /* ヒーロー */
+  .hero { position: relative; overflow: hidden; padding: 56px 0 120px;
+          background: linear-gradient(170deg, var(--sky2) 0%, var(--sky) 55%, var(--bg) 100%); }
+  .hero .wrap { display: flex; gap: 40px; align-items: center; }
+  .hero img.icon { width: 168px; height: 168px; flex: none; filter: drop-shadow(0 12px 24px rgba(47,118,133,.25)); }
+  .badge { display: inline-block; font-size: .8rem; font-weight: 700; color: var(--lav);
+           background: color-mix(in srgb, var(--lav) 14%, transparent); padding: 2px 12px; border-radius: 99px; }
+  .hero h1 { font-size: clamp(1.9rem, 5.5vw, 2.8rem); line-height: 1.3; margin: 10px 0 8px; font-weight: 900;
+             background: linear-gradient(90deg, var(--green), var(--teal) 50%, var(--lav));
+             -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .hero .app { font-weight: 700; margin: 0 0 18px; }
+  .cta { display: inline-flex; align-items: center; gap: 8px; padding: 12px 22px; border-radius: 99px;
+         background: var(--text); color: var(--bg); text-decoration: none; font-weight: 700; }
+  .cta.soon { background: transparent; color: var(--sub); border: 2px dashed var(--line); cursor: default; }
+  .clouds { position: absolute; left: 0; right: 0; bottom: -2px; height: 110px; pointer-events: none; }
+
+  section { padding: 40px 0; }
+  h2 { font-size: 1.45rem; font-weight: 900; margin: 0 0 18px; }
+  .message { background: var(--card); border: 1px solid var(--line); border-radius: 22px; padding: 26px 26px 20px;
+             margin-top: -70px; position: relative; box-shadow: 0 10px 30px rgba(47,118,133,.08); }
+  .message p { margin: 0 0 12px; }
+  .message .by { text-align: right; color: var(--sub); font-size: .9rem; }
+
+  .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+  .feature { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 18px; }
+  .feature .ms { width: 46px; height: 46px; border-radius: 14px; display: grid; place-items: center; color: #fff; margin-bottom: 10px; }
+  .feature h3 { font-size: 1.05rem; margin: 0 0 4px; font-weight: 700; }
+  .feature p { margin: 0; color: var(--sub); font-size: .93rem; }
+  .c1 { background: var(--teal); } .c2 { background: var(--green); } .c3 { background: var(--lav); }
+  .c4 { background: var(--aqua); } .c5 { background: var(--sun); } .c6 { background: linear-gradient(135deg, var(--green), var(--lav)); }
+
+  .event { display: flex; gap: 18px; align-items: center; background: var(--sky); border-radius: 20px; padding: 22px; }
+  .event .ms { font-size: 40px; color: var(--teal); }
+  .event p { margin: 0 0 6px; }
+
+  .notes { background: var(--card); border: 1px solid var(--line); border-left: 5px solid var(--lav);
+           border-radius: 14px; padding: 16px 20px; }
+  .notes ul { margin: 0; padding-left: 1.2em; }
+  .notes li { margin: 4px 0; }
+
+  footer { padding: 32px 0 48px; color: var(--sub); font-size: .88rem; border-top: 1px solid var(--line); margin-top: 24px; }
+  footer nav a { margin-right: 16px; }
+
+  @media (max-width: 640px) {
+    .hero { padding: 36px 0 110px; text-align: center; }
+    .hero .wrap { flex-direction: column; gap: 14px; }
+    .hero img.icon { width: 128px; height: 128px; }
+    .message { padding: 20px 18px 14px; }
+    .event { flex-direction: column; text-align: center; }
+  }
 </style>
 </head>
 <body>
-<main>
-  <h1>すぎなみアートウオークアプリ(非公式)</h1>
-  <p>杉並区「すぎなみアートウオーク」（2026年10月1日〜2027年3月21日）のアートサイン7か所を巡るための、個人が開発した非公式のiPhoneアプリです。杉並区とは関係ありません。</p>
-  <p>イベントの最新情報は<a href="https://www.city.suginami.tokyo.jp/s092/event/27274.html">杉並区公式ページ</a>をご確認ください。</p>
-  <p><a href="support/">サポート・お問い合わせ</a> ／ <a href="privacy/">プライバシーポリシー</a></p>
-  <p class="note">このサイトはアプリが表示する情報（ノベルティ配布場所など）の配信にも使っています。</p>
+
+<header class="hero">
+  <div class="wrap">
+    <img class="icon" src="assets/icon-512.png" alt="アプリのアイコン" width="168" height="168">
+    <div>
+      <span class="badge">杉並区「すぎなみアートウオーク」の非公式アプリ</span>
+      <h1>アートウオークを、<br>もっと楽しく。</h1>
+      <p class="app">すぎなみアートウオークアプリ(非公式)</p>
+      <!-- App Store で公開されたら、下のボタンを App Store へのリンクに差し替える -->
+      <span class="cta soon"><span aria-hidden="true" class="ms">phone_iphone</span>iPhone版・App Storeで近日公開</span>
+    </div>
+  </div>
+  <svg class="clouds" viewBox="0 0 1200 110" preserveAspectRatio="none" aria-hidden="true">
+    <path fill="var(--bg)" d="M0 70 C80 20 170 30 230 62 C280 20 380 18 430 60 C500 22 600 30 640 66 C700 26 800 22 860 60 C920 18 1030 22 1080 62 C1130 40 1180 44 1200 56 L1200 110 L0 110 Z"/>
+  </svg>
+</header>
+
+<main class="wrap">
+  <div class="message">
+    <p>阿佐谷・高円寺の公園などに、女子美術大学の学生さんが描いたアートサインが7か所。杉並区の「すぎなみアートウオーク」を、地図を見ながら気軽に巡れたらいいなと思い、iPhoneアプリを作りました。</p>
+    <p>アートサインの場所の確認や、見た作品の記録、記念の写真、歩いた距離まで、ひとつのアプリで残せます。お散歩のおともに使って、まち歩きとアートをもっと楽しんでもらえたらうれしいです。</p>
+    <p class="by">杉並区在住の個人開発者より</p>
+  </div>
+
+  <section>
+    <h2>アプリでできること</h2>
+    <div class="features">
+      <div class="feature"><span aria-hidden="true" class="ms c1">map</span>
+        <h3>地図とおすすめルート</h3><p>7か所のアートサインと、阿佐ケ谷駅から一周する徒歩ルートを地図に表示。巡る順番は自由です。</p></div>
+      <div class="feature"><span aria-hidden="true" class="ms c4">near_me</span>
+        <h3>近づくとお知らせ</h3><p>アートサインの近くに来ると知らせてくれるので、見逃しません。</p></div>
+      <div class="feature"><span aria-hidden="true" class="ms c3">photo_camera</span>
+        <h3>「見た！」と記念写真</h3><p>作品を見たら記録して、そのまま記念の写真も。あとからアルバムで見返せます。</p></div>
+      <div class="feature"><span aria-hidden="true" class="ms c2">directions_walk</span>
+        <h3>歩いた記録</h3><p>「スタート」から歩いた道のりを地図に残し、距離・歩数・消費カロリーの目安を表示。一時停止もできます。</p></div>
+      <div class="feature"><span aria-hidden="true" class="ms c5">redeem</span>
+        <h3>ノベルティ配布場所</h3><p>オリジナルノベルティを配っている商店街のお店を地図で確認。配布時間・休みも見られます。</p></div>
+      <div class="feature"><span aria-hidden="true" class="ms c6">military_tech</span>
+        <h3>7か所コンプリート</h3><p>すべて巡ると、記念写真と歩いた記録が並ぶコンプリート画面が待っています。</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>すぎなみアートウオークについて</h2>
+    <div class="event">
+      <span aria-hidden="true" class="ms">palette</span>
+      <div>
+        <p>2026年10月1日（木）〜2027年3月21日（日）、阿佐谷・高円寺地域で開催中。アートサインの設置場所や作品の紹介、おすすめの散策ルート、健康ポイントの詳しい内容は、杉並区の公式ページをご覧ください。</p>
+        <a href="https://www.city.suginami.tokyo.jp/s092/event/27274.html" rel="noopener">杉並区公式ページ「すぎなみアートウオーク」</a>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>ご利用の前に</h2>
+    <div class="notes">
+      <ul>
+        <li>このアプリは、杉並区とは関係のない<strong>非公式アプリ</strong>です。アプリについてのお問い合わせを区へ送るのはご遠慮ください。</li>
+        <li>健康ポイントは、アートサインの二次元コードを区の健幸アプリ「なみチャレ」で読み取ると貯まります。このアプリの記録はポイントの対象外です。</li>
+        <li>歩きスマホはせず、住宅街では静かに。アートサインには触れないようにしましょう。</li>
+        <li>記録や写真はお使いのiPhoneの中にだけ保存されます。</li>
+      </ul>
+    </div>
+  </section>
 </main>
+
+<footer>
+  <div class="wrap">
+    <nav><a href="support/">サポート・お問い合わせ</a><a href="privacy/">プライバシーポリシー</a></nav>
+    <p>すぎなみアートウオークアプリ(非公式)／杉並区在住の個人開発者</p>
+  </div>
+</footer>
+
 </body>
 </html>

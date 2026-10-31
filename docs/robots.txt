@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /data/
+
+Sitemap: https://j-mat0131.github.io/suginami-artwalk/sitemap.xml
