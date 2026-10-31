@@ -3,6 +3,13 @@ name: Build (Simulator)
 on:
   push:
     branches: [main]
+    # データ・ドキュメント・定期チェックだけの変更ではアプリをビルドしない
+    paths-ignore:
+      - 'docs/**'
+      - 'monitor/**'
+      - 'tools/**'
+      - '**.md'
+      - '.github/workflows/check-official.yml'
   pull_request:
   workflow_dispatch:
 
@@ -57,6 +64,7 @@ jobs:
           done
           echo "::notice title=Info.plist::UIBackgroundModes=$BG$KEYS"
           echo "$BG" | grep -q location || { echo "::error::UIBackgroundModes に location がありません"; exit 1; }
+          [ -f "$APP/content.json" ] || { echo "::error::content.json が同梱されていません"; exit 1; }
 
       - name: Zip .app for Appetize
         run: |

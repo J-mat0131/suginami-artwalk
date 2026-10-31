@@ -5,6 +5,7 @@ struct SignListView: View {
     @Environment(LocationService.self) private var location
     @Environment(RouteService.self) private var route
     @Environment(PhotoStore.self) private var photos
+    @State private var showCompletion = false
 
     var body: some View {
         NavigationStack {
@@ -26,6 +27,11 @@ struct SignListView: View {
                         }
                     }
                     .padding(.vertical, 4)
+                    if progress.isComplete {
+                        Button { showCompletion = true } label: {
+                            Label("コンプリート画面を見る", systemImage: "star.circle.fill")
+                        }
+                    }
                 }
 
                 if !photos.photos.isEmpty {
@@ -46,6 +52,9 @@ struct SignListView: View {
             }
             .navigationTitle("アート")
             .navigationDestination(for: ArtSign.self) { SignDetailView(sign: $0) }
+            .fullScreenCover(isPresented: $showCompletion) {
+                CompletionView { showCompletion = false }
+            }
         }
     }
 }

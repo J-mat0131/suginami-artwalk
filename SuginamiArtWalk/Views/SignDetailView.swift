@@ -180,29 +180,3 @@ struct SignDetailView: View {
         }
     }
 }
-
-struct CompletionView: View {
-    var onClose: () -> Void
-    @State private var bounce = false
-
-    var body: some View {
-        VStack(spacing: 24) {
-            Spacer()
-            Image(systemName: "star.circle.fill")
-                .font(.system(size: 96))
-                .foregroundStyle(Theme.star)
-                .symbolEffect(.bounce, options: .repeat(2), value: bounce)
-                .onAppear { bounce = true }
-            Text("7か所コンプリート！")
-                .font(.largeTitle.bold())
-            Text("阿佐谷・高円寺のアートサインをすべて巡りました。\nおつかれさまでした。")
-                .multilineTextAlignment(.center)
-                .foregroundStyle(.secondary)
-            Spacer()
-            Button("閉じる", action: onClose)
-                .buttonStyle(.borderedProminent)
-                .controlSize(.large)
-        }
-        .padding(32)
-    }
-}
