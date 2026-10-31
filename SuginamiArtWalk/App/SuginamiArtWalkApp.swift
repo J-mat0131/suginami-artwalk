@@ -11,6 +11,12 @@ struct SuginamiArtWalkApp: App {
     @State private var content = ContentStore()
     @State private var achievements = AchievementStore()
 
+    init() {
+        #if DEBUG
+        DemoMode.configureDefaults()
+        #endif
+    }
+
     var body: some Scene {
         WindowGroup {
             ContentView()
@@ -73,7 +79,10 @@ struct ContentView: View {
     @Environment(WalkHistoryStore.self) private var history
     @Environment(PhotoStore.self) private var photos
     @Environment(AchievementStore.self) private var achievements
+    @Environment(RouteService.self) private var route
     @Environment(\.scenePhase) private var scenePhase
+    @State private var tab = 0
+    @State private var demoReady = false
     @AppStorage("hasSeenGuide.v1") private var hasSeenGuide = false
 
     private func evaluateAchievements() {
@@ -81,16 +90,53 @@ struct ContentView: View {
             progress: progress, history: history, photos: photos, content: content))
     }
 
-    var body: some View {
-        TabView {
+    private var tabs: some View {
+        TabView(selection: $tab) {
             MapScreen()
                 .tabItem { Label("マップ", systemImage: "map") }
+                .tag(0)
             SignListView()
                 .tabItem { Label("アート", systemImage: "paintpalette") }
+                .tag(1)
             InfoView()
                 .tabItem { Label("案内", systemImage: "info.circle") }
+                .tag(2)
         }
+    }
+
+    @ViewBuilder
+    private var root: some View {
+        #if DEBUG
+        if let screen = DemoMode.screen {
+            if !demoReady {
+                ProgressView()
+            } else if screen == "map" || screen == "list" {
+                tabs
+            } else {
+                DemoRoot(screen: screen)
+            }
+        } else {
+            tabs
+        }
+        #else
+        tabs
+        #endif
+    }
+
+    var body: some View {
+        root
         .task {
+            #if DEBUG
+            if DemoMode.isOn {
+                await DemoMode.prepare(progress: progress, history: history, recorder: recorder,
+                                       route: route, achievements: achievements)
+                tab = DemoMode.screen == "list" ? 1 : 0
+                demoReady = true
+                location.requestAndStart()
+                await content.refresh()
+                return
+            }
+            #endif
             // 初回はガイドを読み終えてから位置情報の許可を求める
             if hasSeenGuide { location.requestAndStart() }
             recorder.resumeIfNeeded(location: location)

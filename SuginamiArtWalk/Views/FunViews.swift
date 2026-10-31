@@ -174,6 +174,9 @@ struct WarmthBanner: View {
 
 enum Greeting {
     static func message(at date: Date = Date(), isComplete: Bool) -> String {
+        #if DEBUG
+        let date = DemoMode.isOn ? DemoMode.baseDate : date
+        #endif
         let cal = Calendar.current
         let hour = cal.component(.hour, from: date)
         let month = cal.component(.month, from: date)

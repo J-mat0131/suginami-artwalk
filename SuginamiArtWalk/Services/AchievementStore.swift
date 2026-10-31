@@ -139,4 +139,20 @@ final class AchievementStore {
         defaults.set(unlocked.mapValues { $0.timeIntervalSince1970 }, forKey: unlockedKey)
         defaults.set(Array(unseen), forKey: unseenKey)
     }
+
+    #if DEBUG
+    /// 撮影モード用
+    func demoReset() {
+        unlocked = [:]
+        unseen = []
+        toastQueue = []
+        save()
+    }
+
+    func demoClearToasts() {
+        toastQueue = []
+        unseen = []
+        save()
+    }
+    #endif
 }

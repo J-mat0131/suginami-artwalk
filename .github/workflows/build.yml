@@ -10,6 +10,8 @@ on:
       - 'tools/**'
       - '**.md'
       - '.github/workflows/check-official.yml'
+      - 'appstore/**'
+      - '.github/workflows/screenshots.yml'
   pull_request:
   workflow_dispatch:
 

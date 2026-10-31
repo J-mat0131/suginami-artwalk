@@ -189,6 +189,20 @@ final class WalkRecorder {
         reset()
     }
 
+    #if DEBUG
+    /// 撮影モード用：位置情報を使わずに記録中の状態を作る
+    func demoInject(start: Date, points: [WalkRecord.Point], distance: Double,
+                    movingTime: TimeInterval, steps: Int) {
+        startDate = start
+        self.points = points
+        self.distance = distance
+        self.movingTime = movingTime
+        rawSteps = steps
+        isPaused = false
+        isRecording = true
+    }
+    #endif
+
     // MARK: 内部処理
 
     private func finishPause(now: Date = Date()) {

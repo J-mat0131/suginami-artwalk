@@ -1,0 +1,88 @@
+name: App Store screenshots
+
+# 手動実行のみ。Debug ビルドの撮影モードで各画面をシミュレータ（6.9インチ）で撮影し、
+# appstore/raw/ に保存してコミットする。
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: screenshots
+  cancel-in-progress: true
+
+jobs:
+  capture:
+    runs-on: macos-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build for simulator
+        run: |
+          set -o pipefail
+          brew install xcodegen
+          xcodegen generate
+          xcodebuild -project SuginamiArtWalk.xcodeproj -scheme SuginamiArtWalk \
+            -configuration Debug -sdk iphonesimulator \
+            -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath build CODE_SIGNING_ALLOWED=NO build | tail -5
+
+      - name: Boot simulator
+        run: |
+          DEV=$(xcrun simctl list devices available -j | python3 -c '
+          import json, sys, re
+          d = json.load(sys.stdin)["devices"]
+          best = None
+          for rt, devs in d.items():
+              if "iOS" not in rt: continue
+              ver = tuple(int(x) for x in re.findall(r"\d+", rt.split("iOS")[-1])[:2])
+              for dv in devs:
+                  if "Pro Max" in dv["name"]:
+                      key = (ver, dv["name"])
+                      if best is None or key > best[0]: best = (key, dv["udid"], dv["name"])
+          print(best[1]); print(best[2], file=sys.stderr)
+          ')
+          echo "DEV=$DEV" >> "$GITHUB_ENV"
+          xcrun simctl boot "$DEV"
+          xcrun simctl bootstatus "$DEV" -b
+          xcrun simctl status_bar "$DEV" override --time "9:41" --dataNetwork wifi --wifiMode active --wifiBars 3 \
+            --cellularMode active --cellularBars 4 --batteryState charged --batteryLevel 100
+          xcrun simctl ui "$DEV" appearance light
+          APP=build/Build/Products/Debug-iphonesimulator/SuginamiArtWalk.app
+          xcrun simctl install "$DEV" "$APP"
+          BID=$(plutil -extract CFBundleIdentifier raw "$APP/Info.plist")
+          echo "BID=$BID" >> "$GITHUB_ENV"
+          xcrun simctl privacy "$DEV" grant location "$BID" || true
+
+      - name: Capture
+        run: |
+          mkdir -p appstore/raw
+          # 画面名:待ち時間(秒):緯度,経度
+          for entry in \
+            "map:25:35.70370,139.64850" \
+            "detail:8:35.70362,139.64480" \
+            "summary:14:35.70362,139.64480" \
+            "stamps:8:35.70362,139.64480" \
+            "completion:12:35.70362,139.64480" \
+            "novelty:8:35.70362,139.64480" ; do
+            NAME=${entry%%:*}; REST=${entry#*:}; WAIT=${REST%%:*}; LOC=${REST#*:}
+            xcrun simctl location "$DEV" set "$LOC"
+            SIMCTL_CHILD_TZ=Asia/Tokyo xcrun simctl launch --terminate-running-process "$DEV" "$BID" \
+              -demo -demoScreen "$NAME" -AppleLanguages "(ja)" -AppleLocale ja_JP
+            sleep "$WAIT"
+            xcrun simctl io "$DEV" screenshot --type=png "appstore/raw/$NAME.png"
+            echo "captured $NAME"
+          done
+          sips -g pixelWidth -g pixelHeight appstore/raw/map.png | tail -2
+          echo "::notice title=Screenshots::$(ls appstore/raw | tr '\n' ' ')"
+
+      - name: Commit screenshots
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add appstore/raw
+          git commit -m "App Store用スクリーンショットを撮影" || echo "変更なし"
+          git pull --rebase origin main
+          git push

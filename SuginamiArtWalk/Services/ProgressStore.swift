@@ -60,4 +60,12 @@ final class ProgressStore {
         let raw = Dictionary(uniqueKeysWithValues: visits.map { (String($0.key), $0.value.timeIntervalSince1970) })
         defaults.set(raw, forKey: key)
     }
+
+    #if DEBUG
+    /// 撮影モード用：鑑賞記録を日時つきでまとめて設定する
+    func demoSet(_ v: [Int: Date]) {
+        visits = v
+        save()
+    }
+    #endif
 }
