@@ -57,7 +57,7 @@ jobs:
         if: github.event_name != 'pull_request'
         env:
           APPETIZE_API_TOKEN: ${{ secrets.APPETIZE_API_TOKEN }}
-          APPETIZE_PUBLIC_KEY: ${{ vars.APPETIZE_PUBLIC_KEY }}
+          APPETIZE_PUBLIC_KEY: ${{ vars.APPETIZE_PUBLIC_KEY || 'wlxn5sn3ovsnckupreevii7tpm' }}
         run: |
           if [ -z "$APPETIZE_API_TOKEN" ]; then
             echo "::warning title=Appetize::APPETIZE_API_TOKEN が未設定のためアップロードをスキップしました"
@@ -74,5 +74,5 @@ jobs:
             exit 1
           fi
           KEY=$(grep -o '"publicKey" *: *"[^"]*"' appetize.json | head -1 | sed 's/.*"\([^"]*\)"$/\1/')
-          echo "::notice title=Appetize::アップロード成功 https://appetize.io/app/$KEY （APPETIZE_PUBLIC_KEY=$KEY）"
+          echo "::notice title=Appetize::Uploaded https://appetize.io/app/$KEY"
           echo "### Appetize: https://appetize.io/app/$KEY" >> "$GITHUB_STEP_SUMMARY"
