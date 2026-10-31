@@ -18,7 +18,11 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: io.github.jmat0131.suginami-artwalk
+        DEVELOPMENT_TEAM: H838Y2V34C
+        CODE_SIGN_STYLE: Automatic
         GENERATE_INFOPLIST_FILE: YES
+        # 独自の暗号化を使っていないため輸出コンプライアンスの質問を省略
+        INFOPLIST_KEY_ITSAppUsesNonExemptEncryption: NO
         # ホーム画面のアイコン下に出る名前（長いと「…」で省略されるため短く）
         # App Store上の名前「すぎなみアートウオークアプリ(非公式)」は App Store Connect で設定する
         INFOPLIST_KEY_CFBundleDisplayName: "アートウオーク"
