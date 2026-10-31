@@ -1,0 +1,74 @@
+name: Build (Simulator)
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: macos-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Show Xcode version
+        run: xcodebuild -version
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate Xcode project
+        run: xcodegen generate
+
+      - name: Build for iOS Simulator
+        run: |
+          set -o pipefail
+          xcodebuild \
+            -project SuginamiArtWalk.xcodeproj \
+            -scheme SuginamiArtWalk \
+            -configuration Debug \
+            -sdk iphonesimulator \
+            -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO \
+            build | tee build.log
+
+      - name: Zip .app for Appetize
+        run: |
+          cd build/Build/Products/Debug-iphonesimulator
+          zip -qr "$GITHUB_WORKSPACE/SuginamiArtWalk-simulator.zip" SuginamiArtWalk.app
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: SuginamiArtWalk-simulator
+          path: SuginamiArtWalk-simulator.zip
+          retention-days: 14
+
+      # 任意: リポジトリの Secrets に APPETIZE_API_TOKEN（と既存アプリを更新する場合は
+      # Variables に APPETIZE_PUBLIC_KEY）を設定すると、Appetize へ自動アップロードする。
+      - name: Upload to Appetize
+        if: github.event_name != 'pull_request'
+        env:
+          APPETIZE_API_TOKEN: ${{ secrets.APPETIZE_API_TOKEN }}
+          APPETIZE_PUBLIC_KEY: ${{ vars.APPETIZE_PUBLIC_KEY }}
+        run: |
+          if [ -z "$APPETIZE_API_TOKEN" ]; then
+            echo "APPETIZE_API_TOKEN 未設定のためスキップ（Artifacts の zip を手動でアップロードしてください）"
+            exit 0
+          fi
+          URL="https://api.appetize.io/v1/apps"
+          if [ -n "$APPETIZE_PUBLIC_KEY" ]; then URL="$URL/$APPETIZE_PUBLIC_KEY"; fi
+          curl -sS --fail-with-body -X POST "$URL" \
+            -H "X-API-KEY: $APPETIZE_API_TOKEN" \
+            -F "file=@SuginamiArtWalk-simulator.zip" \
+            -F "platform=ios" | tee appetize.json
+          echo
+          echo "### Appetize" >> "$GITHUB_STEP_SUMMARY"
+          grep -o '"publicKey":"[^"]*"' appetize.json | head -1 | sed 's/"publicKey":"\(.*\)"/https:\/\/appetize.io\/app\/\1/' >> "$GITHUB_STEP_SUMMARY" || true
