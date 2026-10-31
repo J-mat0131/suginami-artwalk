@@ -14,8 +14,8 @@
         "hours": "11:00〜20:00",
         "closed": "火曜、第2月曜",
         "status": "active",
-        "lat": null,
-        "lon": null
+        "lat": 35.706436,
+        "lon": 139.636169
       },
       {
         "id": "rakuzan",
@@ -26,8 +26,8 @@
         "hours": "10:00〜19:00（祝日は18:00まで）",
         "closed": "日曜",
         "status": "active",
-        "lat": null,
-        "lon": null
+        "lat": 35.706543,
+        "lon": 139.636063
       },
       {
         "id": "toy-burger",
@@ -38,8 +38,8 @@
         "hours": "12:00〜20:30",
         "closed": "月曜",
         "status": "active",
-        "lat": null,
-        "lon": null
+        "lat": 35.707645,
+        "lon": 139.634918
       },
       {
         "id": "pearl-center",
@@ -51,8 +51,8 @@
         "closed": "水曜",
         "status": "ended",
         "note": "配布は終了しました（10月16日）",
-        "lat": null,
-        "lon": null
+        "lat": 35.702759,
+        "lon": 139.636658
       },
       {
         "id": "ranfa",
@@ -63,8 +63,8 @@
         "hours": "10:00〜18:00",
         "closed": "月曜",
         "status": "active",
-        "lat": null,
-        "lon": null
+        "lat": 35.699814,
+        "lon": 139.637573
       },
       {
         "id": "kaikyo-bakery",
@@ -75,8 +75,8 @@
         "hours": "9:00〜17:00",
         "closed": "火曜、水曜",
         "status": "active",
-        "lat": null,
-        "lon": null
+        "lat": 35.698673,
+        "lon": 139.638428
       },
       {
         "id": "hanarhythm",
@@ -87,8 +87,8 @@
         "hours": "10:00〜19:00",
         "closed": "水曜",
         "status": "active",
-        "lat": null,
-        "lon": null
+        "lat": 35.699478,
+        "lon": 139.637833
       },
       {
         "id": "boutique-moni",
@@ -99,8 +99,8 @@
         "hours": "11:00〜20:00",
         "closed": "水曜",
         "status": "active",
-        "lat": null,
-        "lon": null
+        "lat": 35.699051,
+        "lon": 139.637131
       },
       {
         "id": "marilou",
@@ -111,8 +111,8 @@
         "hours": "11:00〜18:30",
         "closed": "不定休",
         "status": "active",
-        "lat": null,
-        "lon": null
+        "lat": 35.699051,
+        "lon": 139.637131
       },
       {
         "id": "tsukiri",
@@ -123,8 +123,8 @@
         "hours": "10:30〜19:00",
         "closed": "水曜、木曜",
         "status": "active",
-        "lat": null,
-        "lon": null
+        "lat": 35.699368,
+        "lon": 139.637924
       },
       {
         "id": "tsutsui",
@@ -137,8 +137,8 @@
         "status": "active",
         "startDate": "2026-11-01",
         "note": "11月から配布",
-        "lat": null,
-        "lon": null
+        "lat": 35.699589,
+        "lon": 139.637756
       },
       {
         "id": "look",
@@ -149,8 +149,8 @@
         "hours": "13:00〜17:00",
         "closed": "土曜、日曜、祝日",
         "status": "active",
-        "lat": null,
-        "lon": null
+        "lat": 35.701717,
+        "lon": 139.647736
       },
       {
         "id": "pal",
@@ -161,8 +161,8 @@
         "hours": "10:00〜17:00",
         "closed": "土曜、日曜、祝日",
         "status": "active",
-        "lat": null,
-        "lon": null
+        "lat": 35.703716,
+        "lon": 139.648727
       },
       {
         "id": "junjo",
@@ -173,8 +173,8 @@
         "hours": "9:30〜17:00",
         "closed": "日曜、第2・第3土曜、祝日",
         "status": "active",
-        "lat": null,
-        "lon": null
+        "lat": 35.706421,
+        "lon": 139.650223
       }
     ]
   },
