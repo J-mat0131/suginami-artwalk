@@ -5,10 +5,15 @@ struct MapScreen: View {
     @Environment(ProgressStore.self) private var progress
     @Environment(LocationService.self) private var location
     @Environment(RouteService.self) private var route
+    @Environment(WalkRecorder.self) private var recorder
+    @Environment(WalkHistoryStore.self) private var history
 
     @State private var camera: MapCameraPosition = .region(MapScreen.overview)
     @State private var selected: ArtSign?
     @State private var showRoute = true
+    @State private var confirmStop = false
+    @State private var finishedRecord: WalkRecord?
+    @State private var showHistory = false
 
     static let overview = MKCoordinateRegion(
         center: .init(latitude: 35.7048, longitude: 139.6441),
@@ -34,6 +39,18 @@ struct MapScreen: View {
                     }
                 }
 
+                if recorder.isRecording, recorder.points.count >= 2 {
+                    MapPolyline(coordinates: recorder.coordinates)
+                        .stroke(Theme.track,
+                                style: StrokeStyle(lineWidth: 6, lineCap: .round, lineJoin: .round))
+                }
+                if recorder.isRecording, let first = recorder.coordinates.first {
+                    Annotation("スタート", coordinate: first, anchor: .center) {
+                        Circle().fill(Theme.track).frame(width: 14, height: 14)
+                            .overlay(Circle().stroke(.white, lineWidth: 3))
+                    }
+                }
+
                 ForEach(ArtSign.all) { sign in
                     Annotation(sign.shortPlace, coordinate: sign.coordinate, anchor: .bottom) {
                         SignPin(sign: sign, visited: progress.isVisited(sign))
@@ -48,7 +65,13 @@ struct MapScreen: View {
                 MapScaleView()
             }
             .safeAreaInset(edge: .top) { header }
-            .safeAreaInset(edge: .bottom) { nearbyBanner }
+            .safeAreaInset(edge: .bottom) {
+                VStack(spacing: 8) {
+                    nearbyBanner
+                    walkControl
+                }
+                .padding(.bottom, 8)
+            }
             .toolbar(.hidden, for: .navigationBar)
             .sheet(item: $selected) { sign in
                 NavigationStack { SignDetailView(sign: sign) }
@@ -56,6 +79,78 @@ struct MapScreen: View {
                     .presentationDragIndicator(.visible)
             }
             .task { await route.loadIfNeeded() }
+            .confirmationDialog("記録を終了しますか？", isPresented: $confirmStop, titleVisibility: .visible) {
+                Button("終了してまとめを見る") { finishWalk() }
+                Button("記録を破棄", role: .destructive) { recorder.discard(location: location) }
+                Button("記録を続ける", role: .cancel) {}
+            }
+            .sheet(item: $finishedRecord) { record in
+                NavigationStack { WalkSummaryView(record: record, showsCloseButton: true) }
+            }
+        }
+        .sheet(isPresented: $showHistory) {
+            NavigationStack { WalkHistoryView() }
+        }
+    }
+
+    private func finishWalk() {
+        guard let record = recorder.stop(location: location, progress: progress) else { return }
+        // ほとんど動いていない記録は保存しない
+        if record.distance >= 20 || record.duration >= 60 {
+            history.add(record)
+        }
+        finishedRecord = record
+    }
+
+    @ViewBuilder
+    private var walkControl: some View {
+        if recorder.isRecording {
+            HStack(spacing: 14) {
+                TimelineView(.periodic(from: .now, by: 1)) { context in
+                    let elapsed = context.date.timeIntervalSince(recorder.startDate ?? context.date)
+                    HStack(spacing: 14) {
+                        stat(elapsed.clockText, "時間")
+                        stat(recorder.distance.walkText, "距離")
+                        stat(recorder.steps.map { "\($0)" } ?? "—", "歩数")
+                    }
+                }
+                Spacer(minLength: 0)
+                Button {
+                    confirmStop = true
+                } label: {
+                    Label("停止", systemImage: "stop.fill")
+                        .font(.headline)
+                        .padding(.horizontal, 6)
+                }
+                .buttonStyle(.borderedProminent)
+                .tint(.red)
+                .accessibilityLabel("記録を停止")
+            }
+            .padding(.horizontal, 16)
+            .padding(.vertical, 12)
+            .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 18))
+            .padding(.horizontal, 12)
+        } else {
+            Button {
+                recorder.start(location: location)
+            } label: {
+                Label("スタート", systemImage: "figure.walk")
+                    .font(.headline)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 6)
+            }
+            .buttonStyle(.borderedProminent)
+            .buttonBorderShape(.capsule)
+            .controlSize(.large)
+            .padding(.horizontal, 12)
+            .accessibilityHint("歩いた道のりの記録を始めます")
+        }
+    }
+
+    private func stat(_ value: String, _ label: String) -> some View {
+        VStack(alignment: .leading, spacing: 1) {
+            Text(value).font(.headline.monospacedDigit())
+            Text(label).font(.caption2).foregroundStyle(.secondary)
         }
     }
 
@@ -78,6 +173,12 @@ struct MapScreen: View {
                 .foregroundStyle(.secondary)
             }
             Spacer()
+            Button {
+                showHistory = true
+            } label: {
+                Image(systemName: "clock.arrow.circlepath")
+            }
+            .accessibilityLabel("歩いた記録")
             Button {
                 withAnimation { showRoute.toggle() }
             } label: {
@@ -116,7 +217,6 @@ struct MapScreen: View {
             }
             .buttonStyle(.plain)
             .padding(.horizontal, 12)
-            .padding(.bottom, 8)
             .transition(.move(edge: .bottom).combined(with: .opacity))
         } else if let next = progress.nextSign, let d = location.distance(to: next) {
             Button { selected = next } label: {
@@ -132,7 +232,6 @@ struct MapScreen: View {
             }
             .buttonStyle(.plain)
             .padding(.horizontal, 12)
-            .padding(.bottom, 8)
         }
     }
 }

@@ -5,6 +5,8 @@ struct SuginamiArtWalkApp: App {
     @State private var progress = ProgressStore()
     @State private var location = LocationService()
     @State private var route = RouteService()
+    @State private var recorder = WalkRecorder()
+    @State private var history = WalkHistoryStore()
 
     var body: some Scene {
         WindowGroup {
@@ -12,6 +14,8 @@ struct SuginamiArtWalkApp: App {
                 .environment(progress)
                 .environment(location)
                 .environment(route)
+                .environment(recorder)
+                .environment(history)
                 .tint(Theme.accent)
         }
     }
@@ -30,6 +34,8 @@ enum Theme {
     static let koenji = Color(light: 0x7E6DB4, dark: 0xA897E0)
     /// 星・太陽の淡い黄
     static let star = Color(light: 0xE8B84A, dark: 0xFBE299)
+    /// 自分が歩いた軌跡
+    static let track = Color(light: 0x7E6DB4, dark: 0xB7A8F0)
     /// カード背景の淡い空色
     static let sky = Color(light: 0xE6F4F6, dark: 0x1F3236)
 
@@ -53,6 +59,7 @@ extension Color {
 
 struct ContentView: View {
     @Environment(LocationService.self) private var location
+    @Environment(WalkRecorder.self) private var recorder
 
     var body: some View {
         TabView {
@@ -63,6 +70,9 @@ struct ContentView: View {
             InfoView()
                 .tabItem { Label("案内", systemImage: "info.circle") }
         }
-        .task { location.requestAndStart() }
+        .task {
+            location.requestAndStart()
+            recorder.resumeIfNeeded(location: location)
+        }
     }
 }

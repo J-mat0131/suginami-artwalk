@@ -15,6 +15,11 @@ targets:
     platform: iOS
     sources:
       - SuginamiArtWalk
+    # 自動生成の Info.plist 項目に加えて、配列が必要な項目だけここで指定する
+    info:
+      path: SuginamiArtWalk/Info.plist
+      properties:
+        UIBackgroundModes: [location]
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: io.github.jmat0131.suginami-artwalk
@@ -26,7 +31,8 @@ targets:
         # ホーム画面のアイコン下に出る名前（長いと「…」で省略されるため短く）
         # App Store上の名前「すぎなみアートウオークアプリ(非公式)」は App Store Connect で設定する
         INFOPLIST_KEY_CFBundleDisplayName: "アートウオーク"
-        INFOPLIST_KEY_NSLocationWhenInUseUsageDescription: "近くのアートサインを知らせ、到着を確認するために現在地を使います。位置情報は端末の外に送信されません。"
+        INFOPLIST_KEY_NSLocationWhenInUseUsageDescription: "近くのアートサインを知らせ、到着を確認するため、また「スタート」後に歩いた道のりを記録するために現在地を使います。位置情報は端末の外に送信されません。"
+        INFOPLIST_KEY_NSMotionUsageDescription: "歩いた記録に歩数を表示するために、iPhoneの歩数計を使います。データは端末の外に送信されません。"
         INFOPLIST_KEY_UILaunchScreen_Generation: YES
         INFOPLIST_KEY_UISupportedInterfaceOrientations: UIInterfaceOrientationPortrait
         INFOPLIST_KEY_UIApplicationSceneManifest_Generation: YES
