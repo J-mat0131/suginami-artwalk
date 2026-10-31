@@ -140,8 +140,9 @@ enum ArtWalkEvent {
     static let routeMapPDF = URL(string: "https://www.city.suginami.tokyo.jp/documents/27274/artwalkmap.pdf")!
     static let noveltyPDF = URL(string: "https://www.city.suginami.tokyo.jp/documents/27274/haihu.pdf")!
     static let namichareURL = URL(string: "https://www.suginami-namichare.com/")!
-    static let contactFormURL = URL(string: "https://logoform.jp/form/Y4gR/1305910")!
-    static let contactPhone = "03-3312-2111"
+    /// このアプリのサポート・プライバシーポリシー（GitHub Pages）
+    static let supportURL = URL(string: "https://j-mat0131.github.io/suginami-artwalk/support/")!
+    static let privacyURL = URL(string: "https://j-mat0131.github.io/suginami-artwalk/privacy/")!
 
     static var isOngoing: Bool {
         let now = Date()

@@ -1,3 +1,4 @@
+import SafariServices
 import SwiftUI
 
 struct InfoView: View {
@@ -6,6 +7,18 @@ struct InfoView: View {
     @Environment(\.openURL) private var openURL
     @State private var confirmReset = false
     @State private var showGuide = false
+    @State private var webPage: WebPage?
+
+    private struct WebPage: Identifiable {
+        let url: URL
+        var id: URL { url }
+    }
+
+    private var versionText: String {
+        let v = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "-"
+        let b = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "-"
+        return "\(v)（\(b)）"
+    }
 
     var body: some View {
         NavigationStack {
@@ -98,16 +111,18 @@ struct InfoView: View {
                     rule("camera", "撮影時は通行の妨げと写り込みに配慮")
                 }
 
-                Section("お問い合わせ（杉並区 都市整備部管理課）") {
-                    Button {
-                        openURL(URL(string: "tel:\(ArtWalkEvent.contactPhone.replacingOccurrences(of: "-", with: ""))")!)
-                    } label: {
-                        Label(ArtWalkEvent.contactPhone, systemImage: "phone")
+                Section {
+                    Button { webPage = WebPage(url: ArtWalkEvent.supportURL) } label: {
+                        Label("お問い合わせ・よくある質問", systemImage: "envelope")
                     }
-                    link("お問い合わせフォーム", ArtWalkEvent.contactFormURL, icon: "envelope")
-                    Text("サインの破損を見つけたら区へお知らせください。本アプリについての問い合わせは区へ送らないでください。")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                    Button { webPage = WebPage(url: ArtWalkEvent.privacyURL) } label: {
+                        Label("プライバシーポリシー", systemImage: "hand.raised")
+                    }
+                    LabeledContent("バージョン", value: versionText)
+                } header: {
+                    Text("このアプリについて")
+                } footer: {
+                    Text("イベントそのものについてのお問い合わせ（アートサインの破損の連絡など）は、上の「イベント公式ページ」に記載の連絡先へお願いします。このアプリについてのお問い合わせは、区ではなく「お問い合わせ」からお送りください。")
                 }
 
                 Section {
@@ -121,6 +136,9 @@ struct InfoView: View {
             .sheet(isPresented: $showGuide) {
                 GuideView(onFinish: { showGuide = false })
                     .presentationDragIndicator(.visible)
+            }
+            .sheet(item: $webPage) { page in
+                SafariView(url: page.url).ignoresSafeArea()
             }
             .confirmationDialog("鑑賞記録をすべて消しますか？", isPresented: $confirmReset, titleVisibility: .visible) {
                 Button("リセット", role: .destructive) { progress.reset() }
@@ -141,4 +159,19 @@ struct InfoView: View {
     private func rule(_ icon: String, _ text: String) -> some View {
         Label(text, systemImage: icon).font(.subheadline)
     }
+}
+
+
+/// アプリ内でWebページを開く（サポートページ・プライバシーポリシー）
+struct SafariView: UIViewControllerRepresentable {
+    let url: URL
+
+    func makeUIViewController(context: Context) -> SFSafariViewController {
+        let vc = SFSafariViewController(url: url)
+        vc.preferredControlTintColor = UIColor(Theme.accent)
+        vc.dismissButtonStyle = .close
+        return vc
+    }
+
+    func updateUIViewController(_ uiViewController: SFSafariViewController, context: Context) {}
 }
