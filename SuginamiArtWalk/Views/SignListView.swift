@@ -4,6 +4,7 @@ struct SignListView: View {
     @Environment(ProgressStore.self) private var progress
     @Environment(LocationService.self) private var location
     @Environment(RouteService.self) private var route
+    @Environment(PhotoStore.self) private var photos
 
     var body: some View {
         NavigationStack {
@@ -27,11 +28,16 @@ struct SignListView: View {
                     .padding(.vertical, 4)
                 }
 
+                if !photos.photos.isEmpty {
+                    Section { RecentPhotosStrip() }
+                }
+
                 Section("アートサイン") {
                     ForEach(ArtSign.all) { sign in
                         NavigationLink(value: sign) {
                             SignRow(sign: sign,
                                     visited: progress.isVisited(sign),
+                                    photoCount: photos.photos(for: sign).count,
                                     distance: location.distance(to: sign),
                                     legToNext: route.legs.first { $0.id == sign.id })
                         }
@@ -47,6 +53,7 @@ struct SignListView: View {
 private struct SignRow: View {
     let sign: ArtSign
     let visited: Bool
+    let photoCount: Int
     let distance: Double?
     let legToNext: RouteService.Leg?
 
@@ -61,6 +68,10 @@ private struct SignRow: View {
                         .foregroundStyle(Theme.color(for: sign.area))
                     if let d = distance {
                         Text("現在地から \(d.walkText)")
+                    }
+                    if photoCount > 0 {
+                        Label("\(photoCount)", systemImage: "camera.fill")
+                            .foregroundStyle(.secondary)
                     }
                 }
                 .font(.caption)

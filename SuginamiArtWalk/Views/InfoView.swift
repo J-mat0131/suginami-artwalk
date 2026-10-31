@@ -4,10 +4,39 @@ struct InfoView: View {
     @Environment(ProgressStore.self) private var progress
     @Environment(\.openURL) private var openURL
     @State private var confirmReset = false
+    @State private var showGuide = false
 
     var body: some View {
         NavigationStack {
             List {
+                Section {
+                    Button { showGuide = true } label: {
+                        HStack(spacing: 14) {
+                            Image(systemName: "sparkles")
+                                .font(.title2)
+                                .foregroundStyle(.white)
+                                .frame(width: 48, height: 48)
+                                .background(
+                                    LinearGradient(colors: [Theme.asagaya, Theme.route, Theme.koenji],
+                                                   startPoint: .topLeading, endPoint: .bottomTrailing),
+                                    in: RoundedRectangle(cornerRadius: 12))
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("すぎなみアートウオークの楽しみ方")
+                                    .font(.headline)
+                                    .foregroundStyle(.primary)
+                                Text("巡り方・記録・写真・なみチャレを5ステップで")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                            Spacer(minLength: 0)
+                            Image(systemName: "chevron.right")
+                                .font(.caption.bold())
+                                .foregroundStyle(.tertiary)
+                        }
+                        .padding(.vertical, 4)
+                    }
+                }
+
                 Section {
                     LabeledContent("期間", value: ArtWalkEvent.periodText)
                     LabeledContent("エリア", value: "阿佐谷・高円寺")
@@ -63,10 +92,14 @@ struct InfoView: View {
                     Button("鑑賞記録をリセット", role: .destructive) { confirmReset = true }
                         .disabled(progress.visitedCount == 0)
                 } footer: {
-                    Text("このアプリは杉並区とは関係のない非公式アプリです。情報は2026年10月30日時点の区公式ページをもとにしています。最新情報は必ず公式ページでご確認ください。位置情報・歩いた記録・鑑賞記録は端末内にのみ保存され、外部に送信されることはありません。")
+                    Text("このアプリは杉並区とは関係のない非公式アプリです。情報は2026年10月30日時点の区公式ページをもとにしています。最新情報は必ず公式ページでご確認ください。位置情報・歩いた記録・鑑賞記録・撮影した写真は端末内にのみ保存され、外部に送信されることはありません。")
                 }
             }
             .navigationTitle("案内")
+            .sheet(isPresented: $showGuide) {
+                GuideView(onFinish: { showGuide = false })
+                    .presentationDragIndicator(.visible)
+            }
             .confirmationDialog("鑑賞記録をすべて消しますか？", isPresented: $confirmReset, titleVisibility: .visible) {
                 Button("リセット", role: .destructive) { progress.reset() }
             }

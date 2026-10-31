@@ -32,6 +32,8 @@ targets:
         # App Store上の名前「すぎなみアートウオークアプリ(非公式)」は App Store Connect で設定する
         INFOPLIST_KEY_CFBundleDisplayName: "アートウオーク"
         INFOPLIST_KEY_NSLocationWhenInUseUsageDescription: "近くのアートサインを知らせ、到着を確認するため、また「スタート」後に歩いた道のりを記録するために現在地を使います。位置情報は端末の外に送信されません。"
+        INFOPLIST_KEY_NSCameraUsageDescription: "アートサインを鑑賞した記念に写真を撮るためにカメラを使います。写真はこのアプリの中にだけ保存されます。"
+        INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription: "撮った写真を「写真」アプリに保存するために使います。"
         INFOPLIST_KEY_NSMotionUsageDescription: "歩いた記録に歩数を表示するために、iPhoneの歩数計を使います。データは端末の外に送信されません。"
         INFOPLIST_KEY_UILaunchScreen_Generation: YES
         INFOPLIST_KEY_UISupportedInterfaceOrientations: UIInterfaceOrientationPortrait

@@ -51,8 +51,11 @@ jobs:
           grep ' warning: ' build.log | sort -u | head -10 | while read -r l; do echo "::warning title=Swift::${l##*/}"; done
           [ "$ICON" = "AppIcon" ] || { echo "::error::AppIcon が組み込まれていません"; exit 1; }
           BG=$(plutil -extract UIBackgroundModes json -o - "$APP/Info.plist" 2>/dev/null || echo "なし")
-          MOTION=$(plutil -extract NSMotionUsageDescription raw "$APP/Info.plist" >/dev/null 2>&1 && echo ok || echo なし)
-          echo "::notice title=Info.plist::UIBackgroundModes=$BG NSMotionUsageDescription=$MOTION"
+          KEYS=""
+          for k in NSLocationWhenInUseUsageDescription NSMotionUsageDescription NSCameraUsageDescription NSPhotoLibraryAddUsageDescription; do
+            plutil -extract $k raw "$APP/Info.plist" >/dev/null 2>&1 && KEYS="$KEYS $k=ok" || { echo "::error::$k がありません"; exit 1; }
+          done
+          echo "::notice title=Info.plist::UIBackgroundModes=$BG$KEYS"
           echo "$BG" | grep -q location || { echo "::error::UIBackgroundModes に location がありません"; exit 1; }
 
       - name: Zip .app for Appetize

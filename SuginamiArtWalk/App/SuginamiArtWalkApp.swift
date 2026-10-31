@@ -7,6 +7,7 @@ struct SuginamiArtWalkApp: App {
     @State private var route = RouteService()
     @State private var recorder = WalkRecorder()
     @State private var history = WalkHistoryStore()
+    @State private var photos = PhotoStore()
 
     var body: some Scene {
         WindowGroup {
@@ -16,6 +17,7 @@ struct SuginamiArtWalkApp: App {
                 .environment(route)
                 .environment(recorder)
                 .environment(history)
+                .environment(photos)
                 .tint(Theme.accent)
         }
     }
@@ -60,6 +62,7 @@ extension Color {
 struct ContentView: View {
     @Environment(LocationService.self) private var location
     @Environment(WalkRecorder.self) private var recorder
+    @AppStorage("hasSeenGuide.v1") private var hasSeenGuide = false
 
     var body: some View {
         TabView {
@@ -71,8 +74,15 @@ struct ContentView: View {
                 .tabItem { Label("案内", systemImage: "info.circle") }
         }
         .task {
-            location.requestAndStart()
+            // 初回はガイドを読み終えてから位置情報の許可を求める
+            if hasSeenGuide { location.requestAndStart() }
             recorder.resumeIfNeeded(location: location)
+        }
+        .fullScreenCover(isPresented: Binding(get: { !hasSeenGuide }, set: { if !$0 { hasSeenGuide = true } })) {
+            GuideView(onFinish: {
+                hasSeenGuide = true
+                location.requestAndStart()
+            }, isFirstLaunch: true)
         }
     }
 }

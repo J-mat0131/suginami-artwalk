@@ -6,10 +6,13 @@ struct SignDetailView: View {
 
     @Environment(ProgressStore.self) private var progress
     @Environment(LocationService.self) private var location
+    @Environment(PhotoStore.self) private var photoStore
     @Environment(\.openURL) private var openURL
 
     @State private var confirmManual = false
     @State private var celebrate = false
+    @State private var showCamera = false
+    @State private var celebrateAfterCamera = false
 
     private var visited: Bool { progress.isVisited(sign) }
     private var near: Bool { location.isNear(sign) }
@@ -19,6 +22,7 @@ struct SignDetailView: View {
             VStack(alignment: .leading, spacing: 20) {
                 header
                 checkInCard
+                SignPhotosSection(sign: sign) { showCamera = true }
                 conceptSection
                 motifSection
                 actions
@@ -27,6 +31,17 @@ struct SignDetailView: View {
                     .foregroundStyle(.secondary)
             }
             .padding(20)
+            .fullScreenCover(isPresented: $showCamera, onDismiss: {
+                if celebrateAfterCamera {
+                    celebrateAfterCamera = false
+                    celebrate = true
+                }
+            }) {
+                CameraPicker { image in
+                    photoStore.add(image, for: sign)
+                }
+                .ignoresSafeArea()
+            }
         }
         .navigationTitle(sign.shortPlace)
         .navigationBarTitleDisplayMode(.inline)
@@ -92,6 +107,11 @@ struct SignDetailView: View {
                 }
                 .buttonStyle(.borderedProminent)
                 .controlSize(.large)
+                if CameraPicker.isAvailable {
+                    Label("記録すると、そのまま記念の写真を撮れます", systemImage: "camera")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
             }
             Text("ポイントを貯めるには、サインの二次元コードを区の健幸アプリ「なみチャレ」で読み取ってください（本アプリの記録はポイント対象外です）。")
                 .font(.caption2)
@@ -151,7 +171,13 @@ struct SignDetailView: View {
 
     private func record() {
         progress.markVisited(sign)
-        if progress.isComplete { celebrate = true }
+        if CameraPicker.isAvailable {
+            // 先に写真を撮り、閉じた後でコンプリート画面を出す
+            celebrateAfterCamera = progress.isComplete
+            showCamera = true
+        } else if progress.isComplete {
+            celebrate = true
+        }
     }
 }
 
