@@ -1,0 +1,182 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-10-31",
+  "novelty": {
+    "description": "アート作品を使ったオリジナルノベルティを、阿佐谷・高円寺の商店街のお店などで配布しています。どなたでも受け取れます。数に限りがあり、なくなり次第終了です。",
+    "sourceURL": "https://www.city.suginami.tokyo.jp/documents/27274/haihu.pdf",
+    "spots": [
+      {
+        "id": "kanamono-watanabe",
+        "area": "asagaya",
+        "street": "阿佐谷商和会",
+        "name": "カナモノワタナベ",
+        "address": "東京都杉並区阿佐谷北2-14-8",
+        "hours": "11:00〜20:00",
+        "closed": "火曜、第2月曜",
+        "status": "active",
+        "lat": null,
+        "lon": null
+      },
+      {
+        "id": "rakuzan",
+        "area": "asagaya",
+        "street": "阿佐谷商和会",
+        "name": "阿佐谷銘茶 楽山",
+        "address": "東京都杉並区阿佐谷北2-15-19",
+        "hours": "10:00〜19:00（祝日は18:00まで）",
+        "closed": "日曜",
+        "status": "active",
+        "lat": null,
+        "lon": null
+      },
+      {
+        "id": "toy-burger",
+        "area": "asagaya",
+        "street": "阿佐谷商和会",
+        "name": "トイバーガー",
+        "address": "東京都杉並区阿佐谷北2-38-23",
+        "hours": "12:00〜20:30",
+        "closed": "月曜",
+        "status": "active",
+        "lat": null,
+        "lon": null
+      },
+      {
+        "id": "pearl-center",
+        "area": "asagaya",
+        "street": "阿佐谷パールセンター",
+        "name": "商店街事務所（阿佐谷ふるさと館）",
+        "address": "東京都杉並区阿佐谷南1-36-10",
+        "hours": "11:00〜17:00",
+        "closed": "水曜",
+        "status": "ended",
+        "note": "配布は終了しました（10月16日）",
+        "lat": null,
+        "lon": null
+      },
+      {
+        "id": "ranfa",
+        "area": "asagaya",
+        "street": "南阿佐ヶ谷すずらん商店街",
+        "name": "らんふぁ",
+        "address": "東京都杉並区阿佐谷南1-13-14",
+        "hours": "10:00〜18:00",
+        "closed": "月曜",
+        "status": "active",
+        "lat": null,
+        "lon": null
+      },
+      {
+        "id": "kaikyo-bakery",
+        "area": "asagaya",
+        "street": "南阿佐ヶ谷すずらん商店街",
+        "name": "海響ベーカリー",
+        "address": "東京都杉並区阿佐谷南1-10-9",
+        "hours": "9:00〜17:00",
+        "closed": "火曜、水曜",
+        "status": "active",
+        "lat": null,
+        "lon": null
+      },
+      {
+        "id": "hanarhythm",
+        "area": "asagaya",
+        "street": "南阿佐ヶ谷すずらん商店街",
+        "name": "トーキョーハナリズム",
+        "address": "東京都杉並区阿佐谷南1-13-11",
+        "hours": "10:00〜19:00",
+        "closed": "水曜",
+        "status": "active",
+        "lat": null,
+        "lon": null
+      },
+      {
+        "id": "boutique-moni",
+        "area": "asagaya",
+        "street": "南阿佐ヶ谷すずらん商店街",
+        "name": "Boutique MONI!",
+        "address": "東京都杉並区阿佐谷南1-12-5-107",
+        "hours": "11:00〜20:00",
+        "closed": "水曜",
+        "status": "active",
+        "lat": null,
+        "lon": null
+      },
+      {
+        "id": "marilou",
+        "area": "asagaya",
+        "street": "南阿佐ヶ谷すずらん商店街",
+        "name": "セレクトショップマリールゥ",
+        "address": "東京都杉並区阿佐谷南1-12-5-105",
+        "hours": "11:00〜18:30",
+        "closed": "不定休",
+        "status": "active",
+        "lat": null,
+        "lon": null
+      },
+      {
+        "id": "tsukiri",
+        "area": "asagaya",
+        "street": "南阿佐ヶ谷すずらん商店街",
+        "name": "つきり",
+        "address": "東京都杉並区阿佐谷南1-13-10",
+        "hours": "10:30〜19:00",
+        "closed": "水曜、木曜",
+        "status": "active",
+        "lat": null,
+        "lon": null
+      },
+      {
+        "id": "tsutsui",
+        "area": "asagaya",
+        "street": "南阿佐ヶ谷すずらん商店街",
+        "name": "ツツヰ生地店",
+        "address": "東京都杉並区阿佐谷南1-13-12",
+        "hours": "11:00〜19:00",
+        "closed": "水曜、第2・第4木曜",
+        "status": "active",
+        "startDate": "2026-11-01",
+        "note": "11月から配布",
+        "lat": null,
+        "lon": null
+      },
+      {
+        "id": "look",
+        "area": "koenji",
+        "street": "高円寺ルック商店街",
+        "name": "商店街事務所",
+        "address": "東京都杉並区高円寺南2-22-9",
+        "hours": "13:00〜17:00",
+        "closed": "土曜、日曜、祝日",
+        "status": "active",
+        "lat": null,
+        "lon": null
+      },
+      {
+        "id": "pal",
+        "area": "koenji",
+        "street": "高円寺パル商店街",
+        "name": "商店街事務所",
+        "address": "東京都杉並区高円寺南3-57-10",
+        "hours": "10:00〜17:00",
+        "closed": "土曜、日曜、祝日",
+        "status": "active",
+        "lat": null,
+        "lon": null
+      },
+      {
+        "id": "junjo",
+        "area": "koenji",
+        "street": "高円寺純情商店街",
+        "name": "商店街事務所",
+        "address": "東京都杉並区高円寺北2-7-13",
+        "hours": "9:30〜17:00",
+        "closed": "日曜、第2・第3土曜、祝日",
+        "status": "active",
+        "lat": null,
+        "lon": null
+      }
+    ]
+  },
+  "notices": []
+}

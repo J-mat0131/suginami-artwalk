@@ -8,6 +8,7 @@ struct SuginamiArtWalkApp: App {
     @State private var recorder = WalkRecorder()
     @State private var history = WalkHistoryStore()
     @State private var photos = PhotoStore()
+    @State private var content = ContentStore()
 
     var body: some Scene {
         WindowGroup {
@@ -18,6 +19,7 @@ struct SuginamiArtWalkApp: App {
                 .environment(recorder)
                 .environment(history)
                 .environment(photos)
+                .environment(content)
                 .tint(Theme.accent)
         }
     }
@@ -36,6 +38,8 @@ enum Theme {
     static let koenji = Color(light: 0x7E6DB4, dark: 0xA897E0)
     /// 星・太陽の淡い黄
     static let star = Color(light: 0xE8B84A, dark: 0xFBE299)
+    /// ノベルティ配布場所（メインビジュアルの太陽の黄色を少し濃く）
+    static let novelty = Color(light: 0xD9A23A, dark: 0xE8B84A)
     /// 自分が歩いた軌跡
     static let track = Color(light: 0x7E6DB4, dark: 0xB7A8F0)
     /// カード背景の淡い空色
@@ -62,6 +66,8 @@ extension Color {
 struct ContentView: View {
     @Environment(LocationService.self) private var location
     @Environment(WalkRecorder.self) private var recorder
+    @Environment(ContentStore.self) private var content
+    @Environment(\.scenePhase) private var scenePhase
     @AppStorage("hasSeenGuide.v1") private var hasSeenGuide = false
 
     var body: some View {
@@ -77,6 +83,10 @@ struct ContentView: View {
             // 初回はガイドを読み終えてから位置情報の許可を求める
             if hasSeenGuide { location.requestAndStart() }
             recorder.resumeIfNeeded(location: location)
+            await content.refresh()
+        }
+        .onChange(of: scenePhase) { _, phase in
+            if phase == .active { Task { await content.refresh() } }
         }
         .fullScreenCover(isPresented: Binding(get: { !hasSeenGuide }, set: { if !$0 { hasSeenGuide = true } })) {
             GuideView(onFinish: {

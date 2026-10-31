@@ -7,6 +7,7 @@ struct MapScreen: View {
     @Environment(RouteService.self) private var route
     @Environment(WalkRecorder.self) private var recorder
     @Environment(WalkHistoryStore.self) private var history
+    @Environment(ContentStore.self) private var content
 
     @State private var camera: MapCameraPosition = .region(MapScreen.overview)
     @State private var selected: ArtSign?
@@ -14,6 +15,8 @@ struct MapScreen: View {
     @State private var confirmStop = false
     @State private var finishedRecord: WalkRecord?
     @State private var showHistory = false
+    @State private var selectedSpot: NoveltySpot?
+    @AppStorage("map.showNovelty") private var showNovelty = true
 
     static let overview = MKCoordinateRegion(
         center: .init(latitude: 35.7048, longitude: 139.6441),
@@ -51,6 +54,18 @@ struct MapScreen: View {
                     }
                 }
 
+                if showNovelty {
+                    ForEach(content.spots.filter { $0.currentStatus() != .ended }) { spot in
+                        if let c = content.coordinate(for: spot) {
+                            Annotation(spot.name, coordinate: c, anchor: .center) {
+                                Button { selectedSpot = spot } label: { NoveltyPin(spot: spot) }
+                                    .buttonStyle(.plain)
+                            }
+                            .annotationTitles(.hidden)
+                        }
+                    }
+                }
+
                 ForEach(ArtSign.all) { sign in
                     Annotation(sign.shortPlace, coordinate: sign.coordinate, anchor: .bottom) {
                         SignPin(sign: sign, visited: progress.isVisited(sign))
@@ -64,7 +79,14 @@ struct MapScreen: View {
                 MapCompass()
                 MapScaleView()
             }
-            .safeAreaInset(edge: .top) { header }
+            .safeAreaInset(edge: .top) {
+                VStack(spacing: 8) {
+                    header
+                    ForEach(content.activeNotices) { notice in
+                        NoticeBanner(notice: notice).padding(.horizontal, 12)
+                    }
+                }
+            }
             .safeAreaInset(edge: .bottom) {
                 VStack(spacing: 8) {
                     nearbyBanner
@@ -73,6 +95,11 @@ struct MapScreen: View {
                 .padding(.bottom, 8)
             }
             .toolbar(.hidden, for: .navigationBar)
+            .sheet(item: $selectedSpot) { spot in
+                NavigationStack { NoveltySpotView(spot: spot) }
+                    .presentationDetents([.medium, .large])
+                    .presentationDragIndicator(.visible)
+            }
             .sheet(item: $selected) { sign in
                 NavigationStack { SignDetailView(sign: sign) }
                     .presentationDetents([.medium, .large])
@@ -179,13 +206,17 @@ struct MapScreen: View {
                 Image(systemName: "clock.arrow.circlepath")
             }
             .accessibilityLabel("歩いた記録")
-            Button {
-                withAnimation { showRoute.toggle() }
+            Menu {
+                Toggle(isOn: $showRoute.animation()) {
+                    Label("おすすめルート", systemImage: "point.topleft.down.to.point.bottomright.curvepath")
+                }
+                Toggle(isOn: $showNovelty.animation()) {
+                    Label("ノベルティ配布場所", systemImage: "gift")
+                }
             } label: {
-                Image(systemName: showRoute ? "point.topleft.down.to.point.bottomright.curvepath.fill"
-                                            : "point.topleft.down.to.point.bottomright.curvepath")
+                Image(systemName: "square.3.layers.3d")
             }
-            .accessibilityLabel(showRoute ? "ルートを隠す" : "ルートを表示")
+            .accessibilityLabel("地図に表示するもの")
             Button {
                 withAnimation { camera = .region(Self.overview) }
             } label: {

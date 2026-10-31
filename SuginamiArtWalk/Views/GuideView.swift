@@ -38,11 +38,15 @@ struct GuideView: View {
                  body: "サインの二次元コードを区の健幸アプリ「なみチャレ」で読み取ると健康ポイントが貯まり、ARでなみすけと記念撮影もできます。（このアプリの記録はポイント対象外です）",
                  tint: Theme.star,
                  link: ("なみチャレについて", ArtWalkEvent.namichareURL)),
-            Card(id: 4, icon: "hand.raised.fill",
+            Card(id: 4, icon: "gift.fill",
+                 title: "オリジナルグッズを\nもらおう",
+                 body: "アート作品を使ったオリジナルノベルティを、阿佐谷・高円寺の商店街のお店などで配っています。どなたでも受け取れます。数に限りがあるので、配布時間・休業日を確認して立ち寄ってみてください。配布状況は変わることがあります。",
+                 tint: Theme.novelty,
+                 link: ("配布場所を見る（PDF）", ArtWalkEvent.noveltyPDF)),
+            Card(id: 5, icon: "hand.raised.fill",
                  title: "安全に、\nまちにやさしく",
                  body: "歩きスマホはやめて、住宅街では静かに。アートサインには触れないでください。撮影のときは通行の妨げや人の写り込みに気をつけましょう。",
-                 tint: Theme.accent,
-                 link: ("ノベルティの配布場所（PDF）", ArtWalkEvent.noveltyPDF)),
+                 tint: Theme.accent),
         ]
     }
 

@@ -15,6 +15,9 @@ targets:
     platform: iOS
     sources:
       - SuginamiArtWalk
+      # GitHub Pages で配信するデータの初期版をアプリにも同梱（オフライン時の予備）
+      - path: docs/data/v1/content.json
+        buildPhase: resources
     # 自動生成の Info.plist 項目に加えて、配列が必要な項目だけここで指定する
     info:
       path: SuginamiArtWalk/Info.plist

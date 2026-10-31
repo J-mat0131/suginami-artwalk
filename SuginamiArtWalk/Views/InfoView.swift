@@ -2,6 +2,7 @@ import SwiftUI
 
 struct InfoView: View {
     @Environment(ProgressStore.self) private var progress
+    @Environment(ContentStore.self) private var content
     @Environment(\.openURL) private var openURL
     @State private var confirmReset = false
     @State private var showGuide = false
@@ -24,7 +25,7 @@ struct InfoView: View {
                                 Text("すぎなみアートウオークの楽しみ方")
                                     .font(.headline)
                                     .foregroundStyle(.primary)
-                                Text("巡り方・記録・写真・なみチャレを5ステップで")
+                                Text("巡り方・記録・写真・ノベルティを6ステップで")
                                     .font(.caption)
                                     .foregroundStyle(.secondary)
                             }
@@ -52,10 +53,31 @@ struct InfoView: View {
                     Text("令和7年度 杉並区 区民参加型予算事業。アートは女子美術大学の学生による制作です。")
                 }
 
+                if !content.activeNotices.isEmpty {
+                    Section("お知らせ") {
+                        ForEach(content.activeNotices) { notice in
+                            NoticeBanner(notice: notice)
+                                .listRowInsets(EdgeInsets(top: 6, leading: 8, bottom: 6, trailing: 8))
+                        }
+                    }
+                }
+
+                Section {
+                    NavigationLink {
+                        NoveltyListView()
+                    } label: {
+                        Label("ノベルティ配布場所", systemImage: "gift")
+                    }
+                } header: {
+                    Text("ノベルティ")
+                } footer: {
+                    Text("アート作品を使ったオリジナルノベルティを商店街のお店などで配布中（数量限定）。\(content.checkedAtText.map { "最終確認日：\($0)" } ?? "")")
+                }
+
                 Section("公式資料") {
                     link("イベント公式ページ", ArtWalkEvent.officialURL, icon: "globe")
                     link("推奨コースマップ（PDF）", ArtWalkEvent.routeMapPDF, icon: "map")
-                    link("ノベルティ配布場所（PDF）", ArtWalkEvent.noveltyPDF, icon: "gift")
+                    link("ノベルティ配布場所一覧（PDF）", ArtWalkEvent.noveltyPDF, icon: "doc.text")
                 }
 
                 Section {
