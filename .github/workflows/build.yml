@@ -39,6 +39,18 @@ jobs:
             CODE_SIGNING_ALLOWED=NO \
             build | tee build.log
 
+      - name: Verify app bundle
+        run: |
+          APP=build/Build/Products/Debug-iphonesimulator/SuginamiArtWalk.app
+          BID=$(plutil -extract CFBundleIdentifier raw "$APP/Info.plist")
+          NAME=$(plutil -extract CFBundleDisplayName raw "$APP/Info.plist")
+          ICON=$(plutil -extract CFBundleIcons.CFBundlePrimaryIcon.CFBundleIconName raw "$APP/Info.plist" 2>/dev/null || echo "なし")
+          ICONFILES=$(ls "$APP" | grep -c '^AppIcon' || true)
+          WARN=$(grep -c ' warning: ' build.log || true)
+          echo "::notice title=App bundle::id=$BID name=$NAME icon=$ICON iconFiles=$ICONFILES warnings=$WARN"
+          grep ' warning: ' build.log | sort -u | head -10 | while read -r l; do echo "::warning title=Swift::${l##*/}"; done
+          [ "$ICON" = "AppIcon" ] || { echo "::error::AppIcon が組み込まれていません"; exit 1; }
+
       - name: Zip .app for Appetize
         run: |
           cd build/Build/Products/Debug-iphonesimulator
