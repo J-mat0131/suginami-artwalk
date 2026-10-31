@@ -78,7 +78,7 @@ private struct FunFactLabelStyle: LabelStyle {
 
 // MARK: - ホット＆コールド
 
-/// 次のアートサインへの近さ
+/// いちばん近い未訪問のアートサインへの近さ
 enum Warmth: Int, Comparable {
     case far = 0, cool, warm, hot
 
@@ -121,7 +121,7 @@ enum Warmth: Int, Comparable {
     }
 }
 
-/// 地図の下に出す「次のアートサイン」の温度表示
+/// 地図の下に出す、いちばん近い未訪問のアートサインの温度表示
 struct WarmthBanner: View {
     let sign: ArtSign
     let distance: CLLocationDistance
@@ -140,7 +140,7 @@ struct WarmthBanner: View {
                     Text(warmth.text)
                         .font(.subheadline.bold())
                         .foregroundStyle(warmth.color)
-                    Text("\(sign.id). \(sign.shortPlace)・\(distance.walkText)")
+                    Text("\(sign.shortPlace)・\(distance.walkText)")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
@@ -166,7 +166,7 @@ struct WarmthBanner: View {
             new > old ? .impact(weight: .medium) : nil
         }
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("次のアートサイン、\(sign.shortPlace)まで\(distance.walkText)。\(warmth.text)")
+        .accessibilityLabel("いちばん近いアートサイン、\(sign.shortPlace)まで\(distance.walkText)。\(warmth.text)")
     }
 }
 

@@ -48,7 +48,7 @@ struct ConstellationView: View {
                     if let p = pts[s.id] {
                         let rank = visitedOrder.firstIndex(of: s)
                         let lit = rank.map { $0 < litCount } ?? false
-                        StarDot(lit: lit, label: "\(s.id)")
+                        StarDot(lit: lit)
                             .position(p)
                     }
                 }
@@ -120,7 +120,6 @@ struct ConstellationView: View {
 
 private struct StarDot: View {
     let lit: Bool
-    let label: String
 
     var body: some View {
         ZStack {
@@ -137,10 +136,6 @@ private struct StarDot: View {
                     .fill(Color.white.opacity(0.28))
                     .frame(width: 7, height: 7)
             }
-            Text(label)
-                .font(.system(size: 9, weight: .bold, design: .rounded))
-                .foregroundStyle(.white.opacity(lit ? 0.9 : 0.45))
-                .offset(x: 13, y: 11)
         }
         .scaleEffect(lit ? 1 : 0.9)
     }

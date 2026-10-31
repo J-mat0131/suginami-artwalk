@@ -44,7 +44,7 @@ final class ProgressStore {
     /// 7か所そろった日時（未達成なら nil）
     var completedDate: Date? { isComplete ? visits.values.max() : nil }
 
-    /// 次に向かう未訪問のサイン（推奨順）
+    /// 未訪問のサイン（データの並び順で最初のもの）
     var nextSign: ArtSign? {
         ArtSign.all.first { visits[$0.id] == nil }
     }

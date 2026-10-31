@@ -64,7 +64,7 @@ struct SignDetailView: View {
     private var header: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack(spacing: 8) {
-                Text("No.\(sign.id)")
+                Image(systemName: sign.stampSymbol)
                     .font(.caption.bold())
                     .padding(.horizontal, 8).padding(.vertical, 3)
                     .background(Theme.color(for: sign.area).opacity(0.15), in: Capsule())

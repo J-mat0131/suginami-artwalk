@@ -22,7 +22,7 @@ struct SignListView: View {
                         VStack(alignment: .leading, spacing: 4) {
                             Text(progress.isComplete ? "全サイン鑑賞おめでとうございます！" : "アートサインを巡ろう")
                                 .font(.headline)
-                            Text("阿佐ケ谷駅から反時計回りの順に並んでいます。順番は自由にアレンジできます。")
+                            Text("好きな順番で巡れます。")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                         }
@@ -76,8 +76,7 @@ struct SignListView: View {
                             SignRow(sign: sign,
                                     visited: progress.isVisited(sign),
                                     photoCount: photos.photos(for: sign).count,
-                                    distance: location.distance(to: sign),
-                                    legToNext: route.legs.first { $0.id == sign.id })
+                                    distance: location.distance(to: sign))
                         }
                     }
                 }
@@ -96,7 +95,6 @@ private struct SignRow: View {
     let visited: Bool
     let photoCount: Int
     let distance: Double?
-    let legToNext: RouteService.Leg?
 
     var body: some View {
         HStack(alignment: .top, spacing: 12) {
@@ -116,11 +114,6 @@ private struct SignRow: View {
                     }
                 }
                 .font(.caption)
-                if let leg = legToNext {
-                    Text("次の地点まで \(leg.distance.walkText)")
-                        .font(.caption2)
-                        .foregroundStyle(.tertiary)
-                }
             }
         }
         .padding(.vertical, 2)

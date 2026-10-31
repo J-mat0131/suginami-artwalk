@@ -2,7 +2,7 @@ import Foundation
 import MapKit
 import Observation
 
-/// 推奨順に7か所を結ぶ徒歩ルートをMapKitで計算する。
+/// 7か所を一周する徒歩ルートの例をMapKitで計算する（巡る順番は自由）。
 /// 取得できなかった区間は直線でつなぐ。
 @Observable
 final class RouteService {

@@ -248,7 +248,7 @@ struct MapScreen: View {
             .accessibilityLabel("歩いた記録")
             Menu {
                 Toggle(isOn: $showRoute.animation()) {
-                    Label("おすすめルート", systemImage: "point.topleft.down.to.point.bottomright.curvepath")
+                    Label("一周ルートの例", systemImage: "point.topleft.down.to.point.bottomright.curvepath")
                 }
                 Toggle(isOn: $showNovelty.animation()) {
                     Label("ノベルティ配布場所", systemImage: "gift")
@@ -318,11 +318,12 @@ struct SignPin: View {
             if visited {
                 Image(systemName: "checkmark").font(.system(size: 15, weight: .bold)).foregroundStyle(.white)
             } else {
-                Text("\(sign.id)").font(.system(size: 15, weight: .bold, design: .rounded))
+                Image(systemName: sign.stampSymbol)
+                    .font(.system(size: 14, weight: .bold))
                     .foregroundStyle(Theme.color(for: sign.area))
             }
         }
-        .accessibilityLabel("\(sign.id)番 \(sign.place) \(visited ? "鑑賞済み" : "")")
+        .accessibilityLabel("\(sign.place)\(visited ? "、鑑賞済み" : "")")
     }
 }
 

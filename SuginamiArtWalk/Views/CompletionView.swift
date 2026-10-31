@@ -86,17 +86,17 @@ struct CompletionView: View {
         }
     }
 
-    /// 7か所の記念写真（撮っていない場所は番号のタイル）＋コンプリートのタイル
+    /// 7か所の記念写真（撮っていない場所は場所アイコンのタイル）＋コンプリートのタイル
     private var photoGrid: some View {
         LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 6), count: 4), spacing: 6) {
             ForEach(ArtSign.all) { sign in
                 if let photo = photos.photos(for: sign).first {
                     PhotoThumb(photo: photo)
                         .overlay(alignment: .topLeading) {
-                            Text("\(sign.id)")
-                                .font(.caption2.bold())
+                            Image(systemName: sign.stampSymbol)
+                                .font(.system(size: 9, weight: .bold))
                                 .foregroundStyle(.white)
-                                .frame(width: 18, height: 18)
+                                .frame(width: 20, height: 20)
                                 .background(Circle().fill(Theme.color(for: sign.area)))
                                 .padding(4)
                         }
