@@ -60,15 +60,19 @@ jobs:
           APPETIZE_PUBLIC_KEY: ${{ vars.APPETIZE_PUBLIC_KEY }}
         run: |
           if [ -z "$APPETIZE_API_TOKEN" ]; then
-            echo "APPETIZE_API_TOKEN 未設定のためスキップ（Artifacts の zip を手動でアップロードしてください）"
+            echo "::warning title=Appetize::APPETIZE_API_TOKEN が未設定のためアップロードをスキップしました"
             exit 0
           fi
           URL="https://api.appetize.io/v1/apps"
           if [ -n "$APPETIZE_PUBLIC_KEY" ]; then URL="$URL/$APPETIZE_PUBLIC_KEY"; fi
-          curl -sS --fail-with-body -X POST "$URL" \
+          STATUS=$(curl -sS -o appetize.json -w '%{http_code}' -X POST "$URL" \
             -H "X-API-KEY: $APPETIZE_API_TOKEN" \
             -F "file=@SuginamiArtWalk-simulator.zip" \
-            -F "platform=ios" | tee appetize.json
-          echo
-          echo "### Appetize" >> "$GITHUB_STEP_SUMMARY"
-          grep -o '"publicKey":"[^"]*"' appetize.json | head -1 | sed 's/"publicKey":"\(.*\)"/https:\/\/appetize.io\/app\/\1/' >> "$GITHUB_STEP_SUMMARY" || true
+            -F "platform=ios")
+          if [ "$STATUS" -lt 200 ] || [ "$STATUS" -ge 300 ]; then
+            echo "::error title=Appetize::アップロード失敗 HTTP $STATUS: $(head -c 300 appetize.json | tr '\n' ' ')"
+            exit 1
+          fi
+          KEY=$(grep -o '"publicKey" *: *"[^"]*"' appetize.json | head -1 | sed 's/.*"\([^"]*\)"$/\1/')
+          echo "::notice title=Appetize::アップロード成功 https://appetize.io/app/$KEY （APPETIZE_PUBLIC_KEY=$KEY）"
+          echo "### Appetize: https://appetize.io/app/$KEY" >> "$GITHUB_STEP_SUMMARY"
