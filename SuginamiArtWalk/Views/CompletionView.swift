@@ -30,6 +30,7 @@ struct CompletionView: View {
             ScrollView {
                 VStack(spacing: 22) {
                     header
+                    ConstellationView(animated: true, height: 230)
                     photoGrid
                     statsSection
                     Text("阿佐谷・高円寺のアートサインをすべて巡りました。\nおつかれさまでした。")

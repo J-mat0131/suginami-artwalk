@@ -6,6 +6,7 @@ struct SignListView: View {
     @Environment(RouteService.self) private var route
     @Environment(PhotoStore.self) private var photos
     @State private var showCompletion = false
+    @Environment(AchievementStore.self) private var achievements
 
     var body: some View {
         NavigationStack {
@@ -31,6 +32,37 @@ struct SignListView: View {
                         Button { showCompletion = true } label: {
                             Label("コンプリート画面を見る", systemImage: "star.circle.fill")
                         }
+                    }
+                }
+
+                Section("あそぶ") {
+                    NavigationLink { StampBookView() } label: {
+                        HStack {
+                            Label("スタンプ帳", systemImage: "seal")
+                            Spacer()
+                            Text("\(progress.visitedCount)/\(progress.total)")
+                                .font(.subheadline.monospacedDigit())
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                    NavigationLink { AchievementsView() } label: {
+                        HStack {
+                            Label("称号", systemImage: "rosette")
+                            if !achievements.unseen.isEmpty {
+                                Text("NEW")
+                                    .font(.caption2.bold())
+                                    .foregroundStyle(.white)
+                                    .padding(.horizontal, 6).padding(.vertical, 1)
+                                    .background(Capsule().fill(Color.red))
+                            }
+                            Spacer()
+                            Text("\(achievements.count)/\(Achievements.all.count)")
+                                .font(.subheadline.monospacedDigit())
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                    NavigationLink { ConstellationScreen() } label: {
+                        Label("すぎなみ座", systemImage: "sparkles")
                     }
                 }
 

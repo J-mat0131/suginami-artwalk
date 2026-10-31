@@ -13,6 +13,8 @@ struct SignDetailView: View {
     @State private var celebrate = false
     @State private var showCamera = false
     @State private var celebrateAfterCamera = false
+    @State private var stampTrigger = 0
+    @State private var pendingStamp = false
 
     private var visited: Bool { progress.isVisited(sign) }
     private var near: Bool { location.isNear(sign) }
@@ -32,10 +34,10 @@ struct SignDetailView: View {
             }
             .padding(20)
             .fullScreenCover(isPresented: $showCamera, onDismiss: {
-                if celebrateAfterCamera {
-                    celebrateAfterCamera = false
-                    celebrate = true
-                }
+                // 写真を撮り終えたらスタンプを押す
+                guard pendingStamp else { return }
+                pendingStamp = false
+                pressStampThenCelebrate()
             }) {
                 CameraPicker { image in
                     photoStore.add(image, for: sign)
@@ -85,14 +87,23 @@ struct SignDetailView: View {
     private var checkInCard: some View {
         VStack(alignment: .leading, spacing: 12) {
             if visited, let date = progress.visitedDate(sign) {
-                Label {
-                    Text("鑑賞済み・\(date.formatted(date: .abbreviated, time: .shortened))")
-                } icon: {
-                    Image(systemName: "checkmark.seal.fill").foregroundStyle(Theme.accent)
+                HStack(spacing: 16) {
+                    StampView(sign: sign, date: date, size: 96)
+                        .modifier(StampPress(trigger: stampTrigger))
+                    VStack(alignment: .leading, spacing: 6) {
+                        Label {
+                            Text("鑑賞済み")
+                        } icon: {
+                            Image(systemName: "checkmark.seal.fill").foregroundStyle(Theme.accent)
+                        }
+                        .font(.headline)
+                        Text(date.formatted(date: .abbreviated, time: .shortened))
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                        Button("記録を取り消す", role: .destructive) { progress.unmark(sign) }
+                            .font(.footnote)
+                    }
                 }
-                .font(.headline)
-                Button("記録を取り消す", role: .destructive) { progress.unmark(sign) }
-                    .font(.footnote)
             } else {
                 if let d = location.distance(to: sign) {
                     Text(near ? "アートサインの近くにいます" : "ここから \(d.walkText)（\(d.walkMinutesText)）")
@@ -171,12 +182,25 @@ struct SignDetailView: View {
 
     private func record() {
         progress.markVisited(sign)
+        celebrateAfterCamera = progress.isComplete
         if CameraPicker.isAvailable {
-            // 先に写真を撮り、閉じた後でコンプリート画面を出す
-            celebrateAfterCamera = progress.isComplete
+            // 先に写真を撮り、閉じたらスタンプ → コンプリート画面
+            pendingStamp = true
             showCamera = true
-        } else if progress.isComplete {
-            celebrate = true
+        } else {
+            pressStampThenCelebrate()
+        }
+    }
+
+    private func pressStampThenCelebrate() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+            stampTrigger += 1
+        }
+        if celebrateAfterCamera {
+            celebrateAfterCamera = false
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.4) {
+                celebrate = true
+            }
         }
     }
 }

@@ -231,6 +231,13 @@ struct MapScreen: View {
                 }
                 .font(.caption)
                 .foregroundStyle(.secondary)
+                TimelineView(.everyMinute) { context in
+                    Text(Greeting.message(at: context.date, isComplete: progress.isComplete))
+                        .font(.caption2)
+                        .foregroundStyle(Theme.accent)
+                        .lineLimit(2)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
             }
             Spacer()
             Button {
@@ -263,6 +270,14 @@ struct MapScreen: View {
         .padding(.horizontal, 12)
     }
 
+    /// いちばん近い未訪問のアートサイン（ホット＆コールドの目標）
+    private var nearestUnvisited: (sign: ArtSign, distance: CLLocationDistance)? {
+        ArtSign.all
+            .filter { !progress.isVisited($0) }
+            .compactMap { s in location.distance(to: s).map { (sign: s, distance: $0) } }
+            .min { $0.distance < $1.distance }
+    }
+
     @ViewBuilder
     private var nearbyBanner: some View {
         if let sign = location.nearbySign, !progress.isVisited(sign) {
@@ -282,20 +297,9 @@ struct MapScreen: View {
             .buttonStyle(.plain)
             .padding(.horizontal, 12)
             .transition(.move(edge: .bottom).combined(with: .opacity))
-        } else if let next = progress.nextSign, let d = location.distance(to: next) {
-            Button { selected = next } label: {
-                HStack {
-                    Text("次は")
-                        .font(.caption).foregroundStyle(.secondary)
-                    Text("\(next.id). \(next.shortPlace)").font(.subheadline.bold())
-                    Spacer()
-                    Text(d.walkText).font(.subheadline.monospacedDigit()).foregroundStyle(.secondary)
-                }
-                .padding(.horizontal, 16).padding(.vertical, 12)
-                .background(.regularMaterial, in: Capsule())
-            }
-            .buttonStyle(.plain)
-            .padding(.horizontal, 12)
+        } else if let target = nearestUnvisited {
+            WarmthBanner(sign: target.sign, distance: target.distance) { selected = target.sign }
+                .padding(.horizontal, 12)
         }
     }
 }

@@ -41,6 +41,8 @@ struct WalkSummaryView: View {
                              value: record.averageSpeedKmh > 0 ? String(format: "%.1f km/h", record.averageSpeedKmh) : "—")
                 }
 
+                FunFactsView(distance: record.distance, kcal: kcal, steps: record.steps)
+
                 if let paused = record.pausedTime, paused >= 1 {
                     Label("一時停止していた \(paused.walkDurationText) は、時間・歩数・距離に含めていません。", systemImage: "pause.circle")
                         .font(.caption)

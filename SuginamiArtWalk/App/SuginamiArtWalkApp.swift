@@ -9,6 +9,7 @@ struct SuginamiArtWalkApp: App {
     @State private var history = WalkHistoryStore()
     @State private var photos = PhotoStore()
     @State private var content = ContentStore()
+    @State private var achievements = AchievementStore()
 
     var body: some Scene {
         WindowGroup {
@@ -20,6 +21,7 @@ struct SuginamiArtWalkApp: App {
                 .environment(history)
                 .environment(photos)
                 .environment(content)
+                .environment(achievements)
                 .tint(Theme.accent)
         }
     }
@@ -67,8 +69,17 @@ struct ContentView: View {
     @Environment(LocationService.self) private var location
     @Environment(WalkRecorder.self) private var recorder
     @Environment(ContentStore.self) private var content
+    @Environment(ProgressStore.self) private var progress
+    @Environment(WalkHistoryStore.self) private var history
+    @Environment(PhotoStore.self) private var photos
+    @Environment(AchievementStore.self) private var achievements
     @Environment(\.scenePhase) private var scenePhase
     @AppStorage("hasSeenGuide.v1") private var hasSeenGuide = false
+
+    private func evaluateAchievements() {
+        achievements.update(with: Achievements.satisfied(
+            progress: progress, history: history, photos: photos, content: content))
+    }
 
     var body: some View {
         TabView {
@@ -83,8 +94,27 @@ struct ContentView: View {
             // 初回はガイドを読み終えてから位置情報の許可を求める
             if hasSeenGuide { location.requestAndStart() }
             recorder.resumeIfNeeded(location: location)
+            evaluateAchievements()
             await content.refresh()
+            evaluateAchievements()
         }
+        .onChange(of: progress.visitedCount) { _, _ in evaluateAchievements() }
+        .onChange(of: history.records.count) { _, _ in evaluateAchievements() }
+        .onChange(of: photos.photos.count) { _, _ in evaluateAchievements() }
+        .overlay(alignment: .top) {
+            if let toast = achievements.toastQueue.first {
+                AchievementToast(achievement: toast)
+                    .id(toast.id)
+                    .transition(.move(edge: .top).combined(with: .opacity))
+                    .onTapGesture { withAnimation { achievements.dismissToast() } }
+                    .task(id: toast.id) {
+                        try? await Task.sleep(nanoseconds: 3_200_000_000)
+                        withAnimation(.easeInOut) { achievements.dismissToast() }
+                    }
+                    .sensoryFeedback(.success, trigger: toast.id)
+            }
+        }
+        .animation(.spring(response: 0.4, dampingFraction: 0.8), value: achievements.toastQueue.first?.id)
         .onChange(of: scenePhase) { _, phase in
             if phase == .active { Task { await content.refresh() } }
         }
