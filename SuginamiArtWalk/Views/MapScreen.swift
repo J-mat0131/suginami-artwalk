@@ -17,6 +17,12 @@ struct MapScreen: View {
     @State private var showHistory = false
     @State private var selectedSpot: NoveltySpot?
     @State private var selectedGroup: NoveltyGroup?
+    /// 今の地図の表示範囲（緯度方向）。広い範囲を表示しているときはノベルティのピンを出さない
+    @State private var spanLat: Double = MapScreen.overview.span.latitudeDelta
+
+    /// これより拡大したらノベルティのピンを出す
+    private static let noveltyZoomSpan = 0.011
+    private var showNoveltyPins: Bool { showNovelty && spanLat < Self.noveltyZoomSpan }
     @AppStorage("map.showNovelty") private var showNovelty = true
 
     static let overview = MKCoordinateRegion(
@@ -61,7 +67,7 @@ struct MapScreen: View {
                     .annotationTitles(.hidden)
                 }
 
-                if showNovelty {
+                if showNoveltyPins {
                     // 近くの配布場所は1つのピンにまとめる（アートサインの名前を隠さないように）
                     ForEach(NoveltyGroup.make(from: content)) { group in
                         Annotation(group.title, coordinate: group.coordinate, anchor: .center) {
@@ -86,6 +92,11 @@ struct MapScreen: View {
                 }
             }
             .mapStyle(.standard(pointsOfInterest: .excludingAll))
+            .onMapCameraChange(frequency: .onEnd) { context in
+                withAnimation(.easeInOut(duration: 0.2)) {
+                    spanLat = context.region.span.latitudeDelta
+                }
+            }
             .mapControls {
                 MapUserLocationButton()
                 MapCompass()
@@ -265,6 +276,7 @@ struct MapScreen: View {
                 }
                 Toggle(isOn: $showNovelty.animation()) {
                     Label("ノベルティ配布場所", systemImage: "gift")
+                    Text("地図を拡大すると表示されます")
                 }
             } label: {
                 Image(systemName: "square.3.layers.3d")
