@@ -52,10 +52,12 @@ struct MapScreen: View {
                     }
                 }
                 if recorder.isRecording, let first = recorder.coordinates.first {
+                    // 名前は出さず印だけ（アートサインの名前を隠さないように）
                     Annotation("スタート", coordinate: first, anchor: .center) {
                         Circle().fill(Theme.track).frame(width: 14, height: 14)
                             .overlay(Circle().stroke(.white, lineWidth: 3))
                     }
+                    .annotationTitles(.hidden)
                 }
 
                 if showNovelty {
@@ -74,6 +76,8 @@ struct MapScreen: View {
                     Annotation(sign.shortPlace, coordinate: sign.coordinate, anchor: .bottom) {
                         SignPin(sign: sign, visited: progress.isVisited(sign))
                     }
+                    // 周りのピンや地名と重なっても、アートサインの名前はいつも表示する
+                    .annotationTitles(.visible)
                     .tag(sign)
                 }
             }

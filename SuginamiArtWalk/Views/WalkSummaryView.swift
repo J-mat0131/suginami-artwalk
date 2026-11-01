@@ -89,20 +89,31 @@ struct WalkSummaryView: View {
                 }
                 if let first = record.coordinates.first {
                     Annotation("スタート", coordinate: first, anchor: .center) {
-                        Circle().fill(Theme.asagaya).frame(width: 14, height: 14)
-                            .overlay(Circle().stroke(.white, lineWidth: 3))
+                        Image(systemName: "figure.walk")
+                            .font(.system(size: 10, weight: .bold))
+                            .foregroundStyle(.white)
+                            .frame(width: 20, height: 20)
+                            .background(Circle().fill(Theme.asagaya))
+                            .overlay(Circle().stroke(.white, lineWidth: 2))
                     }
+                    .annotationTitles(.hidden)
                 }
                 if let last = record.coordinates.last {
                     Annotation("ゴール", coordinate: last, anchor: .center) {
-                        Circle().fill(Theme.track).frame(width: 14, height: 14)
-                            .overlay(Circle().stroke(.white, lineWidth: 3))
+                        Image(systemName: "flag.checkered")
+                            .font(.system(size: 10, weight: .bold))
+                            .foregroundStyle(.white)
+                            .frame(width: 20, height: 20)
+                            .background(Circle().fill(Theme.track))
+                            .overlay(Circle().stroke(.white, lineWidth: 2))
                     }
+                    .annotationTitles(.hidden)
                 }
                 ForEach(record.visitedSigns) { sign in
                     Annotation(sign.shortPlace, coordinate: sign.coordinate, anchor: .bottom) {
                         SignPin(sign: sign, visited: true)
                     }
+                    .annotationTitles(.visible)
                 }
             }
             .mapStyle(.standard(pointsOfInterest: .excludingAll))

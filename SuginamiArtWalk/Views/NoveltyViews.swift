@@ -8,9 +8,9 @@ struct NoveltyPin: View {
     var body: some View {
         let upcoming = spot.currentStatus() == .upcoming
         Image(systemName: "gift.fill")
-            .font(.system(size: 12, weight: .bold))
+            .font(.system(size: 10, weight: .bold))
             .foregroundStyle(.white)
-            .frame(width: 26, height: 26)
+            .frame(width: 21, height: 21)
             .background(Circle().fill(upcoming ? Color.gray : Theme.novelty))
             .overlay(Circle().stroke(.white, lineWidth: 2))
             .shadow(radius: 1.5, y: 1)
