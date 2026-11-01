@@ -66,7 +66,8 @@ jobs:
             "summary:14:35.70362,139.64480" \
             "stamps:8:35.70362,139.64480" \
             "completion:12:35.70362,139.64480" \
-            "novelty:8:35.70362,139.64480" ; do
+            "novelty:8:35.70362,139.64480" \
+            "story:8:35.70362,139.64480" ; do
             NAME=${entry%%:*}; REST=${entry#*:}; WAIT=${REST%%:*}; LOC=${REST#*:}
             xcrun simctl location "$DEV" set "$LOC"
             SIMCTL_CHILD_TZ=Asia/Tokyo xcrun simctl launch --terminate-running-process "$DEV" "$BID" \

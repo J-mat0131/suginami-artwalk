@@ -49,7 +49,7 @@ enum DemoMode {
         case "stamps":
             visit([1, 2, 3, 4, 7, 6])
             history.add(record(legs: [1, 2, 3], start: t0, visited: [1, 2, 3, 4]))
-        case "completion":
+        case "completion", "story":
             visit([1, 2, 3, 4, 5, 6, 7])
             history.add(record(legs: [1, 2, 3, 4, 5, 6, 7], start: t0, visited: [1, 2, 3, 4, 5, 6, 7]))
         case "summary", "detail", "list", "novelty":
@@ -117,6 +117,29 @@ enum DemoMode {
 
 // MARK: - 撮影用の操作（Debug のみ）
 
+/// ストーリーズ用画像の確認（画面いっぱいに表示）
+private struct StoryDemo: View {
+    @Environment(ProgressStore.self) private var progress
+    @Environment(WalkHistoryStore.self) private var history
+
+    var body: some View {
+        let order = ArtSign.all
+            .compactMap { s in progress.visitedDate(s).map { (s, $0) } }
+            .sorted { $0.1 < $1.1 }
+            .map(\.0)
+        let r = history.records.first
+        GeometryReader { g in
+            StoryShareCard(date: progress.completedDate ?? Date(),
+                           stats: r.map { CompletionStats(distance: $0.distance, duration: $0.duration, steps: $0.steps,
+                                                          kcal: $0.kcal(weightKg: 60), isLive: false) },
+                           order: order)
+                .scaleEffect(min(g.size.width / 360, g.size.height / 640))
+                .frame(width: g.size.width, height: g.size.height)
+        }
+        .ignoresSafeArea()
+    }
+}
+
 /// 撮影モードの画面
 struct DemoRoot: View {
     let screen: String
@@ -134,6 +157,8 @@ struct DemoRoot: View {
             NavigationStack { StampBookView() }
         case "completion":
             CompletionView(onClose: {})
+        case "story":
+            StoryDemo()
         case "novelty":
             NavigationStack { NoveltyListView() }
         default:
