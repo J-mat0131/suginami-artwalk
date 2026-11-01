@@ -124,7 +124,12 @@ def compose(name, lines, sub, badge, index):
     canvas.alpha_composite(shot, (sx, sy))
 
     out = OUT / f"{index:02d}_{name}.png"
-    canvas.convert("RGB").save(out, optimize=True)
+    rgb = canvas.convert("RGB")
+    rgb.save(out, optimize=True)
+    # 6.3インチ（Dynamic Island搭載iPhone・中）用。縦横比はほぼ同じなので縮小する
+    out63 = OUT / "6.3inch" / f"{index:02d}_{name}.png"
+    out63.parent.mkdir(parents=True, exist_ok=True)
+    rgb.resize((1206, 2622), Image.LANCZOS).save(out63, optimize=True)
     return out
 
 

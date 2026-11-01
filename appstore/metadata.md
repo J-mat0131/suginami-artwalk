@@ -79,7 +79,7 @@ App Store Connect のアプリ画面にそのまま貼り付けて使う文面�
 
 ### スクリーンショット
 
-`appstore/screenshots/` の6枚（1320×2868）を「iPhone 6.9インチディスプレイ」に、01〜06の順で追加します。
+`appstore/screenshots/6.3inch/` の6枚（1206×2622）を「Dynamic Island搭載iPhone（6.3インチ・必須）」に、01〜06の順で追加します。`appstore/screenshots/` の6枚（1320×2868）は6.9インチ用（任意）です。
 
 ---
 
