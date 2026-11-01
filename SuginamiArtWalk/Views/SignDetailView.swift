@@ -15,6 +15,7 @@ struct SignDetailView: View {
     @State private var celebrateAfterCamera = false
     @State private var stampTrigger = 0
     @State private var pendingStamp = false
+    @State private var showOfficialPage = false
 
     private var visited: Bool { progress.isVisited(sign) }
     private var near: Bool { location.isNear(sign) }
@@ -53,6 +54,9 @@ struct SignDetailView: View {
             Button("キャンセル", role: .cancel) {}
         } message: {
             Text("位置情報で到着を確認できない場合に使います。")
+        }
+        .sheet(isPresented: $showOfficialPage) {
+            SafariView(url: sign.officialURL).ignoresSafeArea()
         }
         .fullScreenCover(isPresented: $celebrate) {
             CompletionView { celebrate = false }
@@ -160,9 +164,10 @@ struct SignDetailView: View {
             .buttonStyle(.bordered)
 
             Button {
-                openURL(sign.officialURL)
+                // アプリの中で区のページを開く（Safariに切り替えない）
+                showOfficialPage = true
             } label: {
-                Label("区の公式ページで全文を読む", systemImage: "safari")
+                Label("区の公式ページで全文を読む", systemImage: "doc.text")
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(.bordered)
