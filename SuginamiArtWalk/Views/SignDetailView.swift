@@ -153,11 +153,7 @@ struct SignDetailView: View {
 
     private var actions: some View {
         VStack(spacing: 10) {
-            Button {
-                let item = MKMapItem(placemark: MKPlacemark(coordinate: sign.coordinate))
-                item.name = "\(sign.place)（アートサイン）"
-                item.openInMaps(launchOptions: [MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeWalking])
-            } label: {
+            DirectionsMenu(name: "\(sign.place)（アートサイン）", coordinate: sign.coordinate) {
                 Label("マップで徒歩経路を開く", systemImage: "figure.walk")
                     .frame(maxWidth: .infinity)
             }

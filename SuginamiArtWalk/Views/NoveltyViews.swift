@@ -157,11 +157,7 @@ struct NoveltySpotView: View {
             }
             Section {
                 if let c = content.coordinate(for: spot) {
-                    Button {
-                        let item = MKMapItem(placemark: MKPlacemark(coordinate: c))
-                        item.name = spot.name
-                        item.openInMaps(launchOptions: [MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeWalking])
-                    } label: {
+                    DirectionsMenu(name: spot.name, coordinate: c) {
                         Label("マップで徒歩経路を開く", systemImage: "figure.walk")
                     }
                 }
