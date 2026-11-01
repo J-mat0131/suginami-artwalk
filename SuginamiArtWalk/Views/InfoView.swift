@@ -9,6 +9,7 @@ struct InfoView: View {
     @State private var showGuide = false
     @State private var webPage: WebPage?
     @AppStorage(AchievementStore.toastEnabledKey) private var achievementToast = true
+    @AppStorage(PhotoStore.saveToLibraryKey) private var saveToLibrary = true
 
     private struct WebPage: Identifiable {
         let url: URL
@@ -116,10 +117,13 @@ struct InfoView: View {
                     Toggle(isOn: $achievementToast) {
                         Label("称号を獲得したときのお知らせ", systemImage: "rosette")
                     }
+                    Toggle(isOn: $saveToLibrary) {
+                        Label("撮った写真を「写真」アプリにも保存", systemImage: "photo.on.rectangle")
+                    }
                 } header: {
-                    Text("お知らせ")
+                    Text("設定")
                 } footer: {
-                    Text("オフにしても、称号はアートタブの「称号」で確認できます。")
+                    Text("称号のお知らせをオフにしても、称号はアートタブの「称号」で確認できます。写真の保存をオフにすると、撮った写真はこのアプリの中にだけ残ります。")
                 }
 
                 Section {

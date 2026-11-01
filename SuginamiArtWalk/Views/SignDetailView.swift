@@ -43,6 +43,8 @@ struct SignDetailView: View {
             }) {
                 CameraPicker { image in
                     photoStore.add(image, for: sign)
+                    // 初期設定では「写真」アプリにも保存する
+                    PhotoStore.saveToPhotoLibrary(image)
                 }
                 .ignoresSafeArea()
             }

@@ -1,6 +1,7 @@
 import UIKit
 import SwiftUI
 import Observation
+import Photos
 
 /// アートサインで撮った写真（本体は Application Support/Photos/ にJPEGで保存）
 struct SignPhoto: Codable, Identifiable, Hashable {
@@ -49,6 +50,24 @@ final class PhotoStore {
         photos.append(photo)
         saveIndex()
         return photo
+    }
+
+    /// 案内タブの「撮った写真を『写真』アプリにも保存」のオン／オフ（初期設定はオン）
+    static let saveToLibraryKey = "photos.saveToLibrary.v1"
+
+    static var saveToLibraryEnabled: Bool {
+        UserDefaults.standard.object(forKey: saveToLibraryKey) as? Bool ?? true
+    }
+
+    /// 撮った写真を iPhone の「写真」アプリにも保存する（追加のみの許可。許可がなければ何もしない）
+    static func saveToPhotoLibrary(_ image: UIImage) {
+        guard saveToLibraryEnabled else { return }
+        PHPhotoLibrary.requestAuthorization(for: .addOnly) { status in
+            guard status == .authorized || status == .limited else { return }
+            PHPhotoLibrary.shared().performChanges {
+                PHAssetChangeRequest.creationRequestForAsset(from: image)
+            } completionHandler: { _, _ in }
+        }
     }
 
     func delete(_ photo: SignPhoto) {
