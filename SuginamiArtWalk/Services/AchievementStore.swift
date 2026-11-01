@@ -97,8 +97,13 @@ final class AchievementStore {
     private(set) var unlocked: [String: Date] = [:]
     /// まだ一覧で見ていない新しい称号
     private(set) var unseen: Set<String> = []
-    /// 画面上部に順番に出すお知らせ
+    /// まだ表示していないお知らせ
     private(set) var toastQueue: [Achievement] = []
+    /// カメラ撮影中などはお知らせを出さずに待つ
+    var isSuspended = false
+
+    /// 案内タブの「称号のお知らせ」のオン／オフ
+    static let toastEnabledKey = "achievements.toastEnabled.v1"
 
     @ObservationIgnored private let defaults = UserDefaults.standard
     private let unlockedKey = "achievements.unlocked.v1"
@@ -125,8 +130,11 @@ final class AchievementStore {
         if changed { save() }
     }
 
-    func dismissToast() {
-        if !toastQueue.isEmpty { toastQueue.removeFirst() }
+    /// 待っているお知らせをまとめて取り出す
+    func takeAllToasts() -> [Achievement] {
+        let all = toastQueue
+        toastQueue = []
+        return all
     }
 
     func markAllSeen() {

@@ -7,6 +7,7 @@ struct SignDetailView: View {
     @Environment(ProgressStore.self) private var progress
     @Environment(LocationService.self) private var location
     @Environment(PhotoStore.self) private var photoStore
+    @Environment(AchievementStore.self) private var achievements
     @Environment(\.openURL) private var openURL
 
     @State private var confirmManual = false
@@ -55,6 +56,8 @@ struct SignDetailView: View {
         } message: {
             Text("位置情報で到着を確認できない場合に使います。")
         }
+        // 撮影中は称号のお知らせを待たせる
+        .onChange(of: showCamera) { _, showing in achievements.isSuspended = showing }
         .sheet(isPresented: $showOfficialPage) {
             SafariView(url: sign.officialURL).ignoresSafeArea()
         }

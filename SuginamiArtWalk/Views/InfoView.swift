@@ -8,6 +8,7 @@ struct InfoView: View {
     @State private var confirmReset = false
     @State private var showGuide = false
     @State private var webPage: WebPage?
+    @AppStorage(AchievementStore.toastEnabledKey) private var achievementToast = true
 
     private struct WebPage: Identifiable {
         let url: URL
@@ -109,6 +110,16 @@ struct InfoView: View {
                     rule("hand.raised", "アートサインに触れたり動かしたりしない")
                     rule("cloud.rain", "天候・体調に合わせて無理せずに")
                     rule("camera", "撮影時は通行の妨げと写り込みに配慮")
+                }
+
+                Section {
+                    Toggle(isOn: $achievementToast) {
+                        Label("称号を獲得したときのお知らせ", systemImage: "rosette")
+                    }
+                } header: {
+                    Text("お知らせ")
+                } footer: {
+                    Text("オフにしても、称号はアートタブの「称号」で確認できます。")
                 }
 
                 Section {
