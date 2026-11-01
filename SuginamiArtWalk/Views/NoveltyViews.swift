@@ -207,3 +207,103 @@ struct NoticeBanner: View {
         .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 14))
     }
 }
+
+
+// MARK: - 地図用のまとめピン
+
+/// 近い配布場所（約90m以内）をひとまとめにしたもの
+struct NoveltyGroup: Identifiable {
+    let id: String
+    let spots: [NoveltySpot]
+    let coordinate: CLLocationCoordinate2D
+
+    var title: String {
+        spots.count == 1 ? spots[0].name : "\(spots[0].street)ほか \(spots.count)か所"
+    }
+
+    static func make(from content: ContentStore, radius: CLLocationDistance = 90) -> [NoveltyGroup] {
+        let items: [(NoveltySpot, CLLocation)] = content.spots
+            .filter { $0.currentStatus() != .ended }
+            .compactMap { s in content.coordinate(for: s).map { (s, CLLocation(latitude: $0.latitude, longitude: $0.longitude)) } }
+        var groups: [[(NoveltySpot, CLLocation)]] = []
+        for item in items {
+            if let i = groups.firstIndex(where: { g in g.contains { $0.1.distance(from: item.1) <= radius } }) {
+                groups[i].append(item)
+            } else {
+                groups.append([item])
+            }
+        }
+        return groups.map { g in
+            let lat = g.map { $0.1.coordinate.latitude }.reduce(0, +) / Double(g.count)
+            let lon = g.map { $0.1.coordinate.longitude }.reduce(0, +) / Double(g.count)
+            return NoveltyGroup(id: g.map { $0.0.id }.joined(separator: "+"),
+                                spots: g.map(\.0),
+                                coordinate: .init(latitude: lat, longitude: lon))
+        }
+    }
+}
+
+struct NoveltyGroupPin: View {
+    let group: NoveltyGroup
+
+    var body: some View {
+        if group.spots.count == 1 {
+            NoveltyPin(spot: group.spots[0])
+        } else {
+            NoveltyPin(spot: group.spots[0])
+                .overlay(alignment: .topTrailing) {
+                    Text("\(group.spots.count)")
+                        .font(.system(size: 10, weight: .heavy, design: .rounded))
+                        .foregroundStyle(.white)
+                        .frame(minWidth: 15, minHeight: 15)
+                        .background(Circle().fill(Theme.koenji))
+                        .overlay(Circle().stroke(.white, lineWidth: 1.5))
+                        .offset(x: 7, y: -7)
+                }
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel("ノベルティ配布場所 \(group.spots.count)か所")
+        }
+    }
+}
+
+/// まとめピンをタップしたときの一覧
+struct NoveltyGroupView: View {
+    let group: NoveltyGroup
+    @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        List {
+            Section {
+                ForEach(group.spots) { spot in
+                    NavigationLink {
+                        NoveltySpotView(spot: spot)
+                    } label: {
+                        VStack(alignment: .leading, spacing: 3) {
+                            HStack(spacing: 6) {
+                                Text(spot.name).font(.headline)
+                                if let status = spot.statusText {
+                                    Text(status)
+                                        .font(.caption2.bold())
+                                        .padding(.horizontal, 6).padding(.vertical, 2)
+                                        .background(Theme.novelty.opacity(0.2), in: Capsule())
+                                }
+                            }
+                            Text("\(spot.hours)・休み：\(spot.closed)").font(.caption)
+                        }
+                    }
+                }
+            } header: {
+                Text(group.spots[0].street)
+            } footer: {
+                Text("最新の配布状況は公式の一覧や店舗でご確認ください。")
+            }
+        }
+        .navigationTitle("ノベルティ配布場所")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .confirmationAction) {
+                Button("閉じる") { dismiss() }
+            }
+        }
+    }
+}

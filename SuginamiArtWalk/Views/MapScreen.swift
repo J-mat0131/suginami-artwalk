@@ -16,6 +16,7 @@ struct MapScreen: View {
     @State private var finishedRecord: WalkRecord?
     @State private var showHistory = false
     @State private var selectedSpot: NoveltySpot?
+    @State private var selectedGroup: NoveltyGroup?
     @AppStorage("map.showNovelty") private var showNovelty = true
 
     static let overview = MKCoordinateRegion(
@@ -61,14 +62,17 @@ struct MapScreen: View {
                 }
 
                 if showNovelty {
-                    ForEach(content.spots.filter { $0.currentStatus() != .ended }) { spot in
-                        if let c = content.coordinate(for: spot) {
-                            Annotation(spot.name, coordinate: c, anchor: .center) {
-                                Button { selectedSpot = spot } label: { NoveltyPin(spot: spot) }
-                                    .buttonStyle(.plain)
+                    // 近くの配布場所は1つのピンにまとめる（アートサインの名前を隠さないように）
+                    ForEach(NoveltyGroup.make(from: content)) { group in
+                        Annotation(group.title, coordinate: group.coordinate, anchor: .center) {
+                            Button {
+                                if group.spots.count == 1 { selectedSpot = group.spots[0] } else { selectedGroup = group }
+                            } label: {
+                                NoveltyGroupPin(group: group)
                             }
-                            .annotationTitles(.hidden)
+                            .buttonStyle(.plain)
                         }
+                        .annotationTitles(.hidden)
                     }
                 }
 
@@ -103,6 +107,11 @@ struct MapScreen: View {
                 .padding(.bottom, 8)
             }
             .toolbar(.hidden, for: .navigationBar)
+            .sheet(item: $selectedGroup) { group in
+                NavigationStack { NoveltyGroupView(group: group) }
+                    .presentationDetents([.medium, .large])
+                    .presentationDragIndicator(.visible)
+            }
             .sheet(item: $selectedSpot) { spot in
                 NavigationStack { NoveltySpotView(spot: spot) }
                     .presentationDetents([.medium, .large])
