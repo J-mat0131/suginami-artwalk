@@ -134,7 +134,7 @@ struct PhotoViewer: View {
                     if let p = currentPhoto, let ui = store.image(p) {
                         let image = Image(uiImage: ui)
                         ShareLink(item: image,
-                                  preview: SharePreview(p.sign?.title ?? "すぎなみアートウオーク", image: image)) {
+                                  preview: SharePreview(p.sign?.title ?? "すぎなみアートウォーク", image: image)) {
                             Label("共有・保存", systemImage: "square.and.arrow.up")
                         }
                     }

@@ -90,7 +90,7 @@ def compose(name, lines, sub, badge, index):
     top = 120
     if badge:
         bf = font("Bold", 40)
-        label = "杉並区「すぎなみアートウオーク」の非公式アプリ"
+        label = "杉並区「すぎなみアートウォーク」の非公式アプリ"
         bw = bf.getbbox(label)[2] + 64
         bx = (W - bw) // 2
         d.rounded_rectangle([bx, top, bx + bw, top + 72], radius=36, fill=(255, 255, 255, 220))

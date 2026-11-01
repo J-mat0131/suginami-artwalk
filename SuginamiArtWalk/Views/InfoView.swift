@@ -35,7 +35,7 @@ struct InfoView: View {
                                                    startPoint: .topLeading, endPoint: .bottomTrailing),
                                     in: RoundedRectangle(cornerRadius: 12))
                             VStack(alignment: .leading, spacing: 2) {
-                                Text("すぎなみアートウオークの楽しみ方")
+                                Text("すぎなみアートウォークの楽しみ方")
                                     .font(.headline)
                                     .foregroundStyle(.primary)
                                 Text("巡り方・記録・写真・ノベルティを6ステップで")

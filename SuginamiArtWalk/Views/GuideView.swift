@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// 「すぎなみアートウオークの楽しみ方」ガイド。初回起動時に表示し、案内タブからいつでも見返せる。
+/// 「すぎなみアートウォークの楽しみ方」ガイド。初回起動時に表示し、案内タブからいつでも見返せる。
 struct GuideView: View {
     /// 閉じる／はじめるを押したとき
     var onFinish: () -> Void
@@ -55,7 +55,7 @@ struct GuideView: View {
     var body: some View {
         VStack(spacing: 0) {
             HStack {
-                Text("すぎなみアートウオークの楽しみ方")
+                Text("すぎなみアートウォークの楽しみ方")
                     .font(.subheadline.bold())
                     .foregroundStyle(.secondary)
                 Spacer()

@@ -2,7 +2,7 @@ import Foundation
 import CoreLocation
 
 /// アートサイン1か所分のデータ。
-/// 出典: 杉並区公式ホームページ「すぎなみアートウオーク」各設置場所ページ（2026年9月15日更新）。
+/// 出典: 杉並区公式ホームページ「すぎなみアートウォーク」各設置場所ページ（2026年9月15日更新）。
 /// コンセプト文は公式ページの要旨を本アプリ用に短く言い換えたもの。全文は officialURL を参照。
 struct ArtSign: Identifiable, Hashable {
     let id: Int              // 推奨巡回順（1〜7）
@@ -130,7 +130,7 @@ extension ArtSign {
 
 /// イベント全体の情報。
 enum ArtWalkEvent {
-    static let name = "すぎなみアートウオーク"
+    static let name = "すぎなみアートウォーク"
     static let start = DateComponents(calendar: .init(identifier: .gregorian), timeZone: .init(identifier: "Asia/Tokyo"), year: 2026, month: 10, day: 1).date!
     /// 2027年3月21日 終日まで
     static let end = DateComponents(calendar: .init(identifier: .gregorian), timeZone: .init(identifier: "Asia/Tokyo"), year: 2027, month: 3, day: 21, hour: 23, minute: 59).date!

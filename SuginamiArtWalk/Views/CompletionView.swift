@@ -53,7 +53,7 @@ struct CompletionView: View {
                     if let shareImage {
                         let image = Image(uiImage: shareImage)
                         ShareLink(item: image,
-                                  preview: SharePreview("すぎなみアートウオーク 7か所コンプリート", image: image)) {
+                                  preview: SharePreview("すぎなみアートウォーク 7か所コンプリート", image: image)) {
                             Image(systemName: "square.and.arrow.up")
                         }
                         .accessibilityLabel("記録を画像で共有")
@@ -220,7 +220,7 @@ struct CompletionShareCard: View {
 
     var body: some View {
         VStack(spacing: 18) {
-            Text("すぎなみアートウオーク")
+            Text("すぎなみアートウォーク")
                 .font(.system(size: 17, weight: .bold))
                 .foregroundStyle(Theme.accent)
             Image(systemName: "star.circle.fill")
@@ -243,7 +243,7 @@ struct CompletionShareCard: View {
             Text("阿佐谷・高円寺 \(date.formatted(.dateTime.year().month().day()))")
                 .font(.system(size: 13))
                 .foregroundStyle(.secondary)
-            Text("すぎなみアートウオークアプリ(非公式)")
+            Text("すぎなみアートウォークアプリ(非公式)")
                 .font(.system(size: 11))
                 .foregroundStyle(.secondary)
         }

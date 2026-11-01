@@ -184,10 +184,10 @@ enum Greeting {
 
         // 開催期間に関するもの
         if date > ArtWalkEvent.end {
-            return "アートウオークは終了しました。ご参加ありがとうございました"
+            return "アートウォークは終了しました。ご参加ありがとうございました"
         }
         if date < ArtWalkEvent.start {
-            return "アートウオークは10月1日から始まります"
+            return "アートウォークは10月1日から始まります"
         }
         let daysLeft = cal.dateComponents([.day], from: cal.startOfDay(for: date),
                                           to: cal.startOfDay(for: ArtWalkEvent.end)).day ?? 99
@@ -215,7 +215,7 @@ enum Greeting {
         switch month {
         case 10, 11: options.append("木々が色づく季節。公園の景色も楽しんで")
         case 12, 1, 2: options.append("寒い日は温かくしてお出かけを")
-        case 3: options.append("春の気配。アートウオークもいよいよ終盤です")
+        case 3: options.append("春の気配。アートウォークもいよいよ終盤です")
         default: break
         }
         if isComplete { options.append("7か所コンプリート、おめでとうございます！") }

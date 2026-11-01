@@ -166,7 +166,7 @@ struct WalkSummaryView: View {
     }
 
     private var shareText: String {
-        var s = "すぎなみアートウオークを歩きました！\n"
+        var s = "すぎなみアートウォークを歩きました！\n"
         s += "距離 \(record.distance.walkText)・\(record.duration.walkDurationText)"
         if let steps = record.steps { s += "・\(steps.formatted())歩" }
         if !record.visitedSigns.isEmpty { s += "\nアートサイン \(record.visitedSigns.count)か所を鑑賞" }

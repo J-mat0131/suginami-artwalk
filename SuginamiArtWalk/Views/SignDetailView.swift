@@ -168,7 +168,7 @@ struct SignDetailView: View {
             .buttonStyle(.bordered)
 
             ShareLink(item: sign.officialURL,
-                      message: Text("すぎなみアートウオーク「\(sign.title)」（\(sign.place)）")) {
+                      message: Text("すぎなみアートウォーク「\(sign.title)」（\(sign.place)）")) {
                 Label("共有", systemImage: "square.and.arrow.up")
                     .frame(maxWidth: .infinity)
             }
