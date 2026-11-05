@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0.3" y2="1">
+      <stop offset="0" stop-color="#9ED8DF"/>
+      <stop offset="1" stop-color="#4FA3B3"/>
+    </linearGradient>
+    <linearGradient id="canvas" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#B9A8E8"/>
+      <stop offset="1" stop-color="#8E9FD6"/>
+    </linearGradient>
+    <clipPath id="hole"><circle cx="240" cy="205" r="92"/></clipPath>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+  <!-- pin -->
+  <path d="M240 468 L118 286 A146 146 0 1 1 362 286 Z" fill="#FFFFFF" stroke="#FFFFFF" stroke-width="16" stroke-linejoin="round"/>
+  <circle cx="240" cy="205" r="92" fill="url(#canvas)"/>
+  <g clip-path="url(#hole)">
+    <path d="M150 285 Q 215 215 300 190" fill="none" stroke="#62B589" stroke-width="44" stroke-linecap="round"/>
+    <path d="M135 320 Q 215 270 340 270" fill="none" stroke="#7FCBD3" stroke-width="36" stroke-linecap="round"/>
+  </g>
+  <!-- brush -->
+  <g transform="translate(292 182) rotate(-45) scale(0.82)">
+    <path d="M110 -24 L230 -15 Q 252 0 230 15 L110 24 Z" fill="#7E6DB4" stroke="#FFFFFF" stroke-width="12" stroke-linejoin="round"/>
+    <rect x="62" y="-30" width="52" height="60" rx="8" fill="#E3E6EE" stroke="#FFFFFF" stroke-width="12"/>
+    <path d="M-10 0 Q 25 -32 66 -26 L66 26 Q 25 32 -10 0 Z" fill="#62B589" stroke="#FFFFFF" stroke-width="12" stroke-linejoin="round"/>
+  </g>
+</svg>
