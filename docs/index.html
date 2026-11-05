@@ -8,6 +8,8 @@
 <meta name="keywords" content="すぎなみアートウォーク,すぎなみアートウオーク,杉並区,阿佐谷,阿佐ヶ谷,高円寺,アートサイン,まち歩き,アプリ">
 <link rel="canonical" href="https://j-mat0131.github.io/suginami-artwalk/">
 <meta name="theme-color" content="#86CCD5">
+<!-- iPhoneのSafariで「App Storeで開く」の帯を表示 -->
+<meta name="apple-itunes-app" content="app-id=6829203410">
 <link rel="icon" type="image/png" href="assets/favicon.png">
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 
@@ -35,6 +37,8 @@
   "inLanguage": "ja",
   "isAccessibleForFree": true,
   "offers": { "@type": "Offer", "price": "0", "priceCurrency": "JPY" },
+  "downloadUrl": "https://apps.apple.com/jp/app/id6829203410",
+  "installUrl": "https://apps.apple.com/jp/app/id6829203410",
   "author": { "@type": "Person", "name": "杉並区在住の個人開発者" },
   "image": "https://j-mat0131.github.io/suginami-artwalk/assets/icon-512.png",
   "url": "https://j-mat0131.github.io/suginami-artwalk/"
@@ -80,7 +84,11 @@
   .hero .app { font-weight: 700; margin: 0 0 18px; }
   .cta { display: inline-flex; align-items: center; gap: 8px; padding: 12px 22px; border-radius: 99px;
          background: var(--text); color: var(--bg); text-decoration: none; font-weight: 700; }
-  .cta.soon { background: transparent; color: var(--sub); border: 2px dashed var(--line); cursor: default; }
+  .cta { white-space: nowrap; }
+  .cta:hover { opacity: .88; }
+  .cta .ms { font-size: 24px; }
+  .cta-note { display: block; margin-top: 8px; font-size: .82rem; color: var(--sub); }
+  .cta-bottom { text-align: center; padding: 8px 0 24px; }
   .clouds { position: absolute; left: 0; right: 0; bottom: -2px; height: 110px; pointer-events: none; }
 
   section { padding: 40px 0; }
@@ -128,8 +136,8 @@
       <span class="badge">杉並区「すぎなみアートウォーク」の非公式アプリ</span>
       <h1>アートウォークを、<br>もっと楽しく。</h1>
       <p class="app">すぎなみアートウォークアプリ(非公式)</p>
-      <!-- App Store で公開されたら、下のボタンを App Store へのリンクに差し替える -->
-      <span class="cta soon"><span aria-hidden="true" class="ms">phone_iphone</span>iPhone版・App Storeで近日公開</span>
+      <a class="cta" href="https://apps.apple.com/jp/app/id6829203410" rel="noopener"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="m7 10 5 5 5-5"/><path d="M5 20h14"/></svg>App Storeからダウンロード</a>
+      <span class="cta-note">iPhone（iOS 17以降）・無料</span>
     </div>
   </div>
   <svg class="clouds" viewBox="0 0 1200 110" preserveAspectRatio="none" aria-hidden="true">
@@ -161,6 +169,11 @@
         <h3>7か所コンプリート</h3><p>すべて巡ると、記念写真と歩いた記録が並ぶコンプリート画面が待っています。</p></div>
     </div>
   </section>
+
+  <div class="cta-bottom">
+    <a class="cta" href="https://apps.apple.com/jp/app/id6829203410" rel="noopener"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="m7 10 5 5 5-5"/><path d="M5 20h14"/></svg>App Storeからダウンロード</a>
+    <span class="cta-note">iPhone（iOS 17以降）・無料</span>
+  </div>
 
   <section>
     <h2>すぎなみアートウォークについて</h2>
