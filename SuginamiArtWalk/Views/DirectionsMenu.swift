@@ -33,12 +33,14 @@ enum Directions {
         item.openInMaps(launchOptions: [MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeWalking])
     }
 
-    /// Googleマップのアプリがあればアプリで、なければブラウザで徒歩経路を開く（APIキー不要の公開URL）
+    /// Googleマップで徒歩経路を開く（APIキー不要の公開URL）。
+    /// 専用スキーム（comgooglemaps://）だと、Googleマップが起動していない状態から開いたときに
+    /// 目的地が受け取られないことがあるため、Google推奨のユニバーサルリンクを使う。
+    /// アプリが入っていればアプリで、入っていなければブラウザで開く。
     static func openGoogle(coordinate: CLLocationCoordinate2D) {
-        let dest = "\(coordinate.latitude),\(coordinate.longitude)"
-        let app = URL(string: "comgooglemaps://?daddr=\(dest)&directionsmode=walking")!
+        let dest = String(format: "%.6f,%.6f", coordinate.latitude, coordinate.longitude)
         let web = URL(string: "https://www.google.com/maps/dir/?api=1&destination=\(dest)&travelmode=walking")!
-        UIApplication.shared.open(app, options: [:]) { opened in
+        UIApplication.shared.open(web, options: [.universalLinksOnly: true]) { opened in
             if !opened { UIApplication.shared.open(web) }
         }
     }
