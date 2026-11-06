@@ -40,7 +40,7 @@ struct InfoView: View {
                                 Text("すぎなみアートウォークの楽しみ方")
                                     .font(.headline)
                                     .foregroundStyle(.primary)
-                                Text("巡り方・記録・写真・ノベルティを6ステップで")
+                                Text("巡り方・記録・写真・なみすけ・ノベルティを7ステップで")
                                     .font(.caption)
                                     .foregroundStyle(.secondary)
                             }
@@ -96,7 +96,16 @@ struct InfoView: View {
                 }
 
                 Section {
-                    Text("サインの二次元コードを「なみチャレ」で読み取ると健康ポイントが貯まります（参加10pt、1か所20pt、7か所達成でさらに100pt）。ARでなみすけと記念撮影もできます。")
+                    Text("アートサインの二次元コードをスマホのカメラで読み取ると、ARでなみすけが現れ、一緒に記念撮影ができます。アプリのインストールや登録は不要です。")
+                        .font(.subheadline)
+                } header: {
+                    Text("なみすけと記念撮影（AR）")
+                } footer: {
+                    Text("区の企画です。アートサインの近くで撮影できます。")
+                }
+
+                Section {
+                    Text("サインの二次元コードを区の健幸アプリ「なみチャレ」で読み取ると、健康ポイントが貯まります（参加10pt、1か所20pt、7か所達成でさらに100pt）。このアプリの記録はポイントの対象外です。")
                         .font(.subheadline)
                     link("なみチャレについて", ArtWalkEvent.namichareURL, icon: "figure.walk.circle")
                 } header: {
